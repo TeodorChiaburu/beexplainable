@@ -4,7 +4,7 @@
 Downloads n images for a given species. The user only needs to provide the species id in the url 
 and a target folder where the images should be downloaded.
 
-Code inspired by:
+Code inspired by: 
     https://medium.com/swlh/web-scraping-stock-images-using-google-selenium-and-python-8b825ba649b9
     https://medium.com/geekculture/scraping-images-using-selenium-f35fab26b122
 """
