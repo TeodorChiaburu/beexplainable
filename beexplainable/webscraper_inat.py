@@ -22,7 +22,7 @@ from PIL import Image
 
 
 
-def fetch_image_urls(query:str, max_links_to_fetch:int, wd:webdriver, sleep_between_interactions:int = 5):
+def fetch_image_urls(query:str, max_links_to_fetch:int, wd:webdriver, sleep_between_interactions:int = 10):
     """Find and store the image urls.
     
     :param query: Species ID to complete the url.
@@ -54,10 +54,10 @@ def fetch_image_urls(query:str, max_links_to_fetch:int, wd:webdriver, sleep_betw
     page_num = 1 # current page number
     
     # Get total number of pages 
-    last_page_link = wd.find_elements(By.XPATH, "//li[@class='pagination-page ng-scope']/a")[-1]
-    if last_page_link:
+    try:
+        last_page_link = wd.find_elements(By.XPATH, "//li[@class='pagination-page ng-scope']/a")[-1]
         num_pages = int( last_page_link.get_attribute('text') )
-    else:
+    except:
         num_pages = 1 # only one page, no links to new pages
 
     # View all results on page
@@ -181,8 +181,8 @@ if __name__ == '__main__':
     # wd = webdriver.Remote(service.service_url)
     # wd.quit()
     
-    search_and_download(search_term = '355696',
-                        target_path = 'Z:\data\Bees\Andrena_vaga', number_images = 10000)
+    search_and_download(search_term = '70400',
+                        target_path = 'Z:\data\Bees\Andrena_cineraria', number_images = 5000)
     
     
      
