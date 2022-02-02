@@ -9,20 +9,25 @@ Code inspired by:
     https://medium.com/geekculture/scraping-images-using-selenium-f35fab26b122
 """
 
+
+
 # Import libraries
 import time
 import requests
 import io, os
-import hashlib
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.service import Service
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.firefox import GeckoDriverManager
 from PIL import Image
 
+# Webdriver for Firefox downloaded with GeckoDriverManager. For other browsers, search for the specific webdriver service
+DRIVER_PATH = r'C:\Users\Teo\.wdm\drivers\geckodriver\win64\v0.30.0\geckodriver.exe'
 
 
-def fetch_image_urls(query:str, max_links_to_fetch:int, wd:webdriver, sleep_between_interactions:int = 10):
+def fetch_image_urls(query:str, max_links_to_fetch:int, wd:webdriver, sleep:int = 10):
     """Find and store the image urls.
     
     :param query: Species ID to complete the url.
@@ -31,32 +36,33 @@ def fetch_image_urls(query:str, max_links_to_fetch:int, wd:webdriver, sleep_betw
     :type max_links_to_fetch: int
     :param wd: Webdriver specific for your browser.
     :type wd: selenium.webdriver
-    :param sleep_between_interactions: Number of seconds to wait until next iteration. Defaults to 5 seconds.
-    :type sleep_between_interactions: int, optional
-    :return: Set of urls
+    :param sleep: Number of seconds to wait until next iteration. Defaults to 10 seconds.
+    :type sleep: int, optional
+    :return: Set of tuples (urls, hrefID_listID)
     """
     
     # Enable infinite scrolling
     def scroll_to_end(wd):
         wd.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        time.sleep(sleep_between_interactions)  
+        time.sleep(sleep)  
          
-    # Build the search query
-    search_url = f"https://www.inaturalist.org/observations?place_id=any&subview=table&taxon_id={query}" # load the page
+    # Build the search query 
+    # Only load fotos marked with Research Grade and CC-BY-NC copyright
+    search_url = f"https://www.inaturalist.org/observations?photo_license=CC-BY-NC&place_id=any&quality_grade=research&subview=table&taxon_id={query}"
     wd.get(search_url)
-    time.sleep(sleep_between_interactions)  
+    time.sleep(sleep)  
     
-    # Define empty set for urls and image counter
-    image_urls = set()
-    image_count = 0
+    image_urls = set() # will contain tuples of urls along with the hrefID and listID within contribution: (url, hrefID_listID)
+    # Note: by storing the href and list IDs, each downloaded image can be retraced exactly on the site
+    image_count = 0 
     results_start = 0
     reached_max = False
     page_num = 1 # current page number
     
     # Get total number of pages 
     try:
-        last_page_link = wd.find_elements(By.XPATH, "//li[@class='pagination-page ng-scope']/a")[-1]
-        num_pages = int( last_page_link.get_attribute('text') )
+        page_links = WebDriverWait(wd, 30).until(EC.presence_of_all_elements_located((By.XPATH, "//li[@class='pagination-page ng-scope']/a")))                
+        num_pages = int( page_links[-1].get_attribute('text') ) 
     except:
         num_pages = 1 # only one page, no links to new pages
 
@@ -73,20 +79,18 @@ def fetch_image_urls(query:str, max_links_to_fetch:int, wd:webdriver, sleep_betw
             
             if page_num < num_pages:
                 page_num += 1
-                search_url = f"https://www.inaturalist.org/observations?page={page_num}&place_id=any&subview=table&taxon_id={query}"
+                search_url = f"https://www.inaturalist.org/observations?page={page_num}&photo_license=CC-BY-NC&place_id=any&quality_grade=research&subview=table&taxon_id={query}" 
                 print('\nLoading next page...\n')
                 wd.get(search_url)
-                time.sleep(sleep_between_interactions)  
                 
-                results_start = 0 # the new thumbnail list from next page will be searched from 0 again
+                results_start = 0 # the new thumbnail list on the next page will be scanned from 0 again
                 
                 # The list of page links at the bottom can only show 10 pages at once.
                 # If there are more than 10 pages, the links to the new ones are only shown as you
                 # progress through the links. Therefore, whenever you turn a page, check
-                # whether there are actually more pages than initially visible
-                last_page_link = wd.find_elements(By.XPATH, "//li[@class='pagination-page ng-scope']/a")[-1]
-                num_pages = int( last_page_link.get_attribute('text') )
-                
+                # whether there are actually more pages than initially visible.
+                page_links = WebDriverWait(wd, 30).until(EC.presence_of_all_elements_located((By.XPATH, "//li[@class='pagination-page ng-scope']/a")))                
+                num_pages = int( page_links[-1].get_attribute('text') )              
                 continue
             
             else:
@@ -96,15 +100,31 @@ def fetch_image_urls(query:str, max_links_to_fetch:int, wd:webdriver, sleep_betw
         # Iterate over (new) images in current thumbnail list
         for img in thumb[results_start : num_results]:
             
-            # URLs are stored as 'background-image' inside style-attribute
-            style_att = img.get_attribute('style')
+            href_att = img.get_attribute('href')
+            href_id = href_att[href_att.rfind('/') + 1 : ] # drop string 'observations'
             
-            # Slice the string down to the url
-            ind_start, ind_end = style_att.find('url') + 5, style_att.find(')') - 1
-            url = style_att[ind_start : ind_end] 
-            print(url)
+            # If no image counter is shown, then there is only one image in the contribution
+            # -> Download its url directly from the table
+            # If there is a counter visible, the contribution has multiple images
+            # -> Click on it and get all available urls
+            if img.find_elements(By.CSS_SELECTOR, 'span.ng-hide'):
+                
+                # URLs are stored as 'background-image' inside the style-attribute
+                style_att = img.get_attribute('style')
+                 
+                # Slice the string down to the url
+                ind_start, ind_end = style_att.find('url') + 5, style_att.find(')') - 1
+                url = style_att[ind_start : ind_end] 
+                image_urls.add( (url, str(href_id) + '_1') ) # for consistency, images in one-element-lists get listID = 1
+                 
+            else:                
+                
+                # Open new tab and get all available image urls
+                href_urls = get_urls_from_href(href_id, wd)
+                
+                image_urls.update(href_urls) # Note: use update when adding elements of a set/list to a set                
             
-            image_urls.add(url)                   
+            # Check if maximum number of images was reached
             image_count = len(image_urls)
             if image_count >= max_links_to_fetch:
                 reached_max = True
@@ -119,14 +139,46 @@ def fetch_image_urls(query:str, max_links_to_fetch:int, wd:webdriver, sleep_betw
     return image_urls
 
 
-def persist_image(folder_path:str, url:str):
+def get_urls_from_href(href_id:int, wd:webdriver, sleep:int = 5):
+    """Find all image urls from a given observation page index.
+    
+    :param href_id: Observation page index. Leads to the page containing all images of a single person's contribution.
+    :type href_id: int
+    :param wd: Webdriver specific for your browser.
+    :type wd: selenium.webdriver
+    :param sleep: Number of seconds to wait until next iteration. Defaults to 5 seconds.
+    :type sleep: int, optional
+    :return: Set of tuples (urls, hrefID_listID)
+    """
+    
+    search_url = f"https://www.inaturalist.org/observations/{href_id}"
+    wd.execute_script("window.open('" + search_url +"');") # open new tab
+    wd.switch_to.window(wd.window_handles[1]) # focus on the new tab
+    time.sleep(sleep) 
+    
+    image_urls = set()    
+    img_list = wd.find_elements(By.XPATH, "//div[@class='image-gallery-thumbnail-inner']/img")   
+    for i in range(len(img_list)):
+        src = img_list[i].get_attribute('src')
+        large_url = src.replace('square', 'large') # store the image in original dimensions, not thumbnail dims
+        image_urls.add( (large_url, str(href_id) + '_' + str(i+1)) )
+        
+    wd.execute_script("window.close('" + search_url +"');") # close new tab
+    wd.switch_to.window(wd.window_handles[0]) # focus on original tab
+    
+    return image_urls
+    
+
+def persist_image(folder_path:str, url_id:tuple):
     """Save image from url to a specified folder.
     
     :param folder_path: Path to the folder where the images are saved.
     :type folder_path: str
-    :param url: Address of the image to download.
-    :type url: str
+    :param url_id: Address of the image to download and hrefID_listID
+    :type url: tuple
     """
+    
+    url, img_id = url_id
     
     try:
         # Get html code of the image
@@ -139,7 +191,10 @@ def persist_image(folder_path:str, url:str):
     try:
         image_file = io.BytesIO(image_content)
         image = Image.open(image_file).convert('RGB')
-        file_path = os.path.join(folder_path, hashlib.sha1(image_content).hexdigest()[:10] + '.jpg')
+        
+        spec = folder_path.split('\\')[-1]
+        file_path = os.path.join(folder_path, spec + '_' + img_id + '.jpg')
+                
         with open(file_path, 'wb') as f:
             image.save(f, "JPEG", quality = 95)
         print(f"SUCCESS - saved {url} - as {file_path}")
@@ -163,7 +218,8 @@ def search_and_download(search_term:str, target_path = './', number_images = 10)
         os.makedirs(target_path)
 
     # Store image urls
-    with webdriver.Firefox(service = Service(GeckoDriverManager().install())) as wd:
+    # Note: On the first run, install driver with GeckoDriverManager().install() instead of DRIVER_PATH
+    with webdriver.Firefox(service = Service(DRIVER_PATH)) as wd:
         res = fetch_image_urls(search_term, number_images, wd = wd)
         
     # Download images
@@ -181,8 +237,7 @@ if __name__ == '__main__':
     # wd = webdriver.Remote(service.service_url)
     # wd.quit()
     
-    search_and_download(search_term = '70400',
-                        target_path = 'Z:\data\Bees\Andrena_cineraria', number_images = 5000)
-    
+    search_and_download(search_term = '62453',
+                        target_path = 'Z:\data\Bees\Anthidium_manicatum', number_images = 5000)
     
      
