@@ -48,7 +48,11 @@ def fetch_image_urls(query:str, max_links_to_fetch:int, wd:webdriver, sleep:int 
          
     # Build the search query 
     # Only load fotos marked with Research Grade and CC-BY-NC copyright
-    search_url = f"https://www.inaturalist.org/observations?photo_license=CC-BY-NC&place_id=any&quality_grade=research&subview=table&taxon_id={query}"
+    page_num = 12 # current page number
+    if page_num == 1:
+        search_url = f"https://www.inaturalist.org/observations?photo_license=CC-BY-NC&place_id=any&quality_grade=research&subview=table&taxon_id={query}"
+    else:
+        search_url = f"https://www.inaturalist.org/observations?page={page_num}&photo_license=CC-BY-NC&place_id=any&quality_grade=research&subview=table&taxon_id={query}"
     wd.get(search_url)
     time.sleep(sleep)  
     
@@ -57,7 +61,6 @@ def fetch_image_urls(query:str, max_links_to_fetch:int, wd:webdriver, sleep:int 
     image_count = 0 
     results_start = 0
     reached_max = False
-    page_num = 1 # current page number
     
     # Get total number of pages 
     try:
@@ -89,9 +92,14 @@ def fetch_image_urls(query:str, max_links_to_fetch:int, wd:webdriver, sleep:int 
                 # If there are more than 10 pages, the links to the new ones are only shown as you
                 # progress through the links. Therefore, whenever you turn a page, check
                 # whether there are actually more pages than initially visible.
-                page_links = WebDriverWait(wd, 30).until(EC.presence_of_all_elements_located((By.XPATH, "//li[@class='pagination-page ng-scope']/a")))                
-                num_pages = int( page_links[-1].get_attribute('text') )              
-                continue
+                try:
+                    page_links = WebDriverWait(wd, 30).until(EC.presence_of_all_elements_located((By.XPATH, "//li[@class='pagination-page ng-scope']/a")))                
+                    num_pages = int( page_links[-1].get_attribute('text') )              
+                    continue
+                
+                except Exception as e:
+                    print(f"ERROR - Could not find page links on page {page_num}. Returning urls stored until now - {e}")  
+                    break
             
             else:
                 print('No more images left!')
@@ -237,7 +245,50 @@ if __name__ == '__main__':
     # wd = webdriver.Remote(service.service_url)
     # wd.quit()
     
-    search_and_download(search_term = '62453',
-                        target_path = 'Z:\data\Bees\Anthidium_manicatum', number_images = 5000)
+    ind_spec = [
+        #(60579, 'Andrena_fulva'),
+        #(62453, 'Anthidium_manicatum'),
+        #(453068, 'Bombus_cryptarum'),
+        #(121989, 'Bombus_hortorum'),
+        #(61803, 'Bombus_hypnorum'),
+        #(57619, 'Bombus_lapidarius'),
+        #(61856, 'Bombus_lucorum'),
+        #(424468, 'Bombus_magnus'),
+        #(55637, 'Bombus_pascuorum'),
+        #(124910, 'Bombus_pratorum'),
+        #(123657, 'Bombus_sylvarum'),
+        #(746682, 'Dasypoda_hirtipes'),
+        #(415589, 'Halictus_scabiosae'),
+        #(207574, 'Osmia_bicolor'),
+        #(876599, 'Osmia_bicornis'),
+        #(126630, 'Osmia_cornuta'),
+        #(154661, 'Sphecodes_albilabris'),
+        (124145, 'Xylocopa_violacea')
+    ]
+    
+    for ind, spec in ind_spec:
+        
+        print('\n******** ' + spec + ' ********\n')
+        search_and_download(search_term = str(ind),
+                            target_path = 'Z:\data\Bees\\' + spec, 
+                            #target_path = 'C:\\Users\Teo\Documents\KInsekten\data\Bees\\' + spec,
+                            number_images = 5000)
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
      
