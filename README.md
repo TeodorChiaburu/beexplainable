@@ -29,3 +29,11 @@ metafiles from the json-files downloaded from Label Studio similar to the
 - *part_locs.txt* - each body part from each file is mapped to its RLE coordinates; 
 each row starts with the file ID followed by the body part ID followed by the list of 
 RLE coordinates
+
+### Important Note on the `RLE` Format
+
+Beware that the `RLE` format used by Label Studio to store segmentation masks is not 
+the same commonly known `RLE` format from the **COCO** dataset. The `RLE` numbers in 
+the **COCO** standard are interpreted as pixel counts, while the Label Studio coordinates 
+stand for ... Please follow this [issue](https://github.com/heartexlabs/label-studio-converter/issues/95) 
+for further details.
