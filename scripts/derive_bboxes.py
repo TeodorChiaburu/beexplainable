@@ -1,0 +1,1 @@
+"""Derive BB-coordinates from segmentation masks"""
