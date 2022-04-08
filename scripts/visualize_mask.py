@@ -43,7 +43,8 @@ ex_part_locs = part_locs_dict[str(im_id)]
 # Decode the RLE lists into a segmentation masks for each body part
 masks = [] # will be a list of tuples (part_name, mask_matrix)
 for part_id in ex_part_locs:
-    mask = decode_rle(ex_part_locs[part_id]) # 1d array
+    mask = decode_rle(list( map( int, (ex_part_locs[part_id]) ) )) # 1d array
+    # Note: the decode_rle function in brush.py needs RLEs as ints
     mask = np.reshape(mask, (h, w, 4)) # h, w, 4 channels for colors and alpha
     masks.append( (parts_dict[part_id], (mask[:, :, 0])) )# 1st channel is enough (it is only a matrix of 0s and 1s)
 
@@ -63,5 +64,5 @@ for i in range(len(masks)):
     plt.imshow(im, interpolation='none')
     plt.imshow(masked, 'jet', interpolation='none', alpha=0.7)
     plt.axis('off')
-plt.savefig('Masks_' + indiv_name + '.png', bbox_inches='tight')
+plt.savefig('../figures/Masks_' + indiv_name + '.png', bbox_inches='tight')
 plt.show()
