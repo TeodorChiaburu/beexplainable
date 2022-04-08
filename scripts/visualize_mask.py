@@ -9,7 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
 from label_studio_converter.brush import decode_rle
-from beexplainable import metafile_readers as mr
+from beexplainable.utils import metafile_readers as mr
 
 IMAGES_PATH = '../images.txt'
 PARTS_PATH = '../parts.txt'
