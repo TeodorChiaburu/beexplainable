@@ -24,6 +24,7 @@ from webdriver_manager.firefox import GeckoDriverManager
 from PIL import Image
 
 # Webdriver for Firefox downloaded with GeckoDriverManager. For other browsers, search for the specific webdriver service
+# https://github.com/mozilla/geckodriver/releases
 DRIVER_PATH = r'C:\Users\Teo\.wdm\drivers\geckodriver\win64\v0.30.0\geckodriver.exe'
 
 

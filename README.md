@@ -37,3 +37,21 @@ the same commonly known `RLE` format from the **COCO** dataset. The `RLE` number
 the **COCO** standard are interpreted as pixel counts, while the Label Studio coordinates 
 stand for ... Please follow this [issue](https://github.com/heartexlabs/label-studio-converter/issues/95) 
 for further details.
+
+### Decoding `RLE` into Segmentation Masks
+
+For translating the `RLE` coordinates into segmentation matrices, the library 
+[label-studio-converter](https://github.com/heartexlabs/label-studio-converter) 
+was used. Every image is accompanied by three part annotations:
+
+- *Head* - includes the whole head of the insect along with its tentacles
+- *Thorax* - middle body together with legs and wings
+- *Abdomen* - lower body including needle, if present
+
+The picture below shows the segmentation masks - binary and overlaid - 
+in the case of an *Osmia bicornis*. More examples can be found in 
+[figures](figures). The *xml* file to recreate the 
+annotation task in Label Studio can be downloaded from ... (*Link zum 
+eigenen LS repo*).
+
+![Example of mask visualization](figures/Masks_Osmia_bicornis_25948103_1.png)
