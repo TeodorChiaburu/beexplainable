@@ -7,13 +7,16 @@ sys.path.insert(2, '../beexplainable')
 
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle
 from PIL import Image
 from label_studio_converter.brush import decode_rle
 from beexplainable.utils import metafile_readers as mr
+from beexplainable.utils import annot_computers as ac
 
 IMAGES_PATH = '../images.txt'
 PARTS_PATH = '../parts.txt'
 PART_LOCS_PATH = '../part_locs.txt'
+BBOX_PATH = '../bounding_boxes.txt'
 BEES_PATH = '../../../data/data_lstudio/Bees_Christian/'
 
 # Get dictionary of file indexes to file names from images path
@@ -43,26 +46,36 @@ ex_part_locs = part_locs_dict[str(im_id)]
 # Decode the RLE lists into a segmentation masks for each body part
 masks = [] # will be a list of tuples (part_name, mask_matrix)
 for part_id in ex_part_locs:
-    mask = decode_rle(list( map( int, (ex_part_locs[part_id]) ) )) # 1d array
-    # Note: the decode_rle function in brush.py needs RLEs as ints
-    mask = np.reshape(mask, (h, w, 4)) # h, w, 4 channels for colors and alpha
-    masks.append( (parts_dict[part_id], (mask[:, :, 0])) )# 1st channel is enough (it is only a matrix of 0s and 1s)
+
+    mask = ac.rle_to_matrix(ex_part_locs[part_id], (h, w))
+    masks.append((parts_dict[part_id], mask))
+
+# Concatenate body part masks into a whole object mask
+masks.append( ('Whole Insect', ac.union_of_masks(masks)) )
+
+# Get dictionary of file ID and BBox coords.
+bbox_dict = mr.bboxes_to_dict(BBOX_PATH)
+xmin, ymin, w, h = float(bbox_dict[str(im_id)][0]), float(bbox_dict[str(im_id)][1]), \
+                   float(bbox_dict[str(im_id)][2]), float(bbox_dict[str(im_id)][3])
 
 # Plot masks
-fig = plt.figure(figsize = (10, 8))
+fig = plt.figure(figsize = (10, 6))
 fig.suptitle(indiv_name, fontsize = 15)
 for i in range(len(masks)):
     # Plot white mask on black background
-    plt.subplot(2, 3, i+1)
+    plt.subplot(2, 4, i+1)
     plt.imshow(masks[i][1])
     plt.title(masks[i][0])
     plt.axis('off')
 
     # Plot mask overlaid on image
     masked = np.ma.masked_where(masks[i][1] == 0, masks[i][1])
-    plt.subplot(2, 3, i+4)
+    plt.subplot(2, 4, i+5)
     plt.imshow(im, interpolation='none')
     plt.imshow(masked, 'jet', interpolation='none', alpha=0.7)
+    if i == len(masks)-1:
+        plt.gca().add_patch(Rectangle((xmin, ymin), w, h,
+                                      edgecolor='green', facecolor='none', lw=2))
     plt.axis('off')
-plt.savefig('../figures/Masks_' + indiv_name + '.png', bbox_inches='tight')
+plt.savefig('../figures/masks_bboxes/MasksBBox_' + indiv_name + '.png', bbox_inches='tight')
 plt.show()

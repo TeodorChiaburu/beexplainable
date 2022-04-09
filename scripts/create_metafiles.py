@@ -63,3 +63,8 @@ for annots in annot_file:
         part_locs.write(str(img_count) + ' ' + parts_dict[part] + rle_str + '\n')
 
     img_count += 1
+
+classes.close()
+images.close()
+image_class_labels.close()
+part_locs.close()

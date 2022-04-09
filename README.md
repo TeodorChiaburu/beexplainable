@@ -49,9 +49,12 @@ was used. Every image is accompanied by three part annotations:
 - *Abdomen* - lower body including needle, if present
 
 The picture below shows the segmentation masks - binary and overlaid - 
-in the case of an *Osmia bicornis*. More examples can be found in 
-[figures](figures). The *xml* file to recreate the 
-annotation task in Label Studio can be downloaded from ... (*Link zum 
-eigenen LS repo*).
+in the case of an *Osmia bicornis*. The mask of the whole object has been 
+computed by means of logical union of the part masks. From the object mask, 
+the bounding box can also be easily derived 
+(see [annot_computer.py](beexplainable/utils/annot_computers.py)). 
+More examples can be found [here](figures/masks_bboxes). 
+The *xml* file to recreate the annotation task in Label Studio can be 
+downloaded from ... (*Link zum eigenen LS repo*).
 
-![Example of mask visualization](figures/Masks_Osmia_bicornis_25948103_1.png)
+![Example of mask visualization](figures/masks_bboxes/MasksBBox_Osmia_bicornis_25948103_1.png)
