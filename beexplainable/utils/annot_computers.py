@@ -7,6 +7,7 @@ sys.path.insert(1, '../../label_studio_converter')
 import numpy as np
 from typing import Tuple, List
 from skimage.measure import regionprops
+from scipy.ndimage.morphology import binary_closing
 from label_studio_converter.brush import decode_rle
 
 def rle_to_matrix(rle_arr: np.ndarray, dims: Tuple[int, int]) -> np.ndarray:
@@ -24,10 +25,23 @@ def rle_to_matrix(rle_arr: np.ndarray, dims: Tuple[int, int]) -> np.ndarray:
     # Note: the decode_rle function in brush.py needs RLEs as ints
     mask = decode_rle(list(map(int, rle_arr))) # 1d array
     # h, w, 4 channels for colors and alpha
-    mask = np.reshape(mask, (dims[0], dims[1], 4))
+    # 1st channel is enough (it is only a gray image)
+    mask = np.reshape(mask, (dims[0], dims[1], 4))[:, :, 0]
 
-    # 1st channel is enough (it is only a matrix of 0s and 1s)
-    return mask[:, :, 0]
+    # Right now, mask is not binary, since decode_rle smoothens the boundaries out.
+    # This results not only pixel values of 0 and 255, but also values in-between.
+    # We map all values above threshold to 1 (part of mask) and those below to 0.
+    threshold = 50
+    for i in range(mask.shape[0]):
+        for j in range(mask.shape[1]):
+            mask[i, j] = 0 if mask[i, j] < threshold else 1
+
+    # Sometimes small pixel regions were not brushed over my the annotators,
+    # although they are an inner part of the segment.
+    # We correct this through the process of closing (dilation + erosion).
+    mask = binary_closing(mask, iterations = 3).astype(np.uint8)
+
+    return mask
 
 def union_of_masks(masks: List[Tuple[str, np.ndarray]]) -> np.ndarray:
     """Computes the union (logical OR) of the matrices in **masks**. \

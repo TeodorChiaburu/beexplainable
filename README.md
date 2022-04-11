@@ -49,11 +49,19 @@ was used. Every image is accompanied by three part annotations:
 - *Abdomen* - lower body including needle, if present
 
 The picture below shows the segmentation masks - binary and overlaid - 
-in the case of an *Osmia bicornis*. The mask of the whole object has been 
-computed by means of logical union of the part masks. From the object mask, 
-the bounding box can also be easily derived 
-(see [annot_computer.py](beexplainable/utils/annot_computers.py)). 
-More examples can be found [here](figures/masks_bboxes). 
+in the case of an *Osmia bicornis*. More examples can be found [here](figures/masks_bboxes). 
+The mask of the whole object has been 
+computed by means of logical union of the part masks. Note that it sometimes
+occured that small pixel patches from within the part segment were not 
+brushed over by the annotator. This was corrected through a morphological 
+process called *closing*, which is *dilation* followed by *erosion*.
+
+From the object mask, the bounding box can also be easily derived 
+(see [annot_computer.py](beexplainable/utils/annot_computers.py)). The 
+convention agreed upon here for storing the bounding box coordinates is 
+the same as in the [CUB200 dataset](figures/Black_Footed_Albatross_0002_55_bbox.jpg): 
+`(x_min, y_min, width, height)`.
+
 The *xml* file to recreate the annotation task in Label Studio can be 
 downloaded from ... (*Link zum eigenen LS repo*).
 

@@ -23,7 +23,7 @@ BEES_PATH = '../../../data/data_lstudio/Bees_Christian/'
 images_dict = mr.metafile_to_dict(IMAGES_PATH)
 
 # Pick an example image (ids start from 1)
-im_id = 300
+im_id = 300 # 10, 100, 300
 
 # Find file name in the dictionary and create path to image
 im_name = images_dict[str(im_id)]
@@ -64,15 +64,17 @@ fig.suptitle(indiv_name, fontsize = 15)
 for i in range(len(masks)):
     # Plot white mask on black background
     plt.subplot(2, 4, i+1)
-    plt.imshow(masks[i][1])
+    plt.imshow(masks[i][1], interpolation='none')
     plt.title(masks[i][0])
     plt.axis('off')
 
     # Plot mask overlaid on image
     masked = np.ma.masked_where(masks[i][1] == 0, masks[i][1])
     plt.subplot(2, 4, i+5)
+    # Use interp. None to avoid colored boundary pixels
     plt.imshow(im, interpolation='none')
-    plt.imshow(masked, 'jet', interpolation='none', alpha=0.7)
+    plt.imshow(masked, 'jet_r' if i == len(masks)-1 else 'jet',
+               interpolation='none', alpha=0.7)
     if i == len(masks)-1:
         plt.gca().add_patch(Rectangle((xmin, ymin), w, h,
                                       edgecolor='green', facecolor='none', lw=2))
