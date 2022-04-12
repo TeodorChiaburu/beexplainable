@@ -23,7 +23,7 @@ BEES_PATH = '../../../data/data_lstudio/Bees_Christian/'
 images_dict = mr.metafile_to_dict(IMAGES_PATH)
 
 # Pick an example image (ids start from 1)
-im_id = 300 # 10, 100, 300
+im_id = 10 # 10, 100, 300
 
 # Find file name in the dictionary and create path to image
 im_name = images_dict[str(im_id)]
@@ -59,7 +59,7 @@ xmin, ymin, w, h = float(bbox_dict[str(im_id)][0]), float(bbox_dict[str(im_id)][
                    float(bbox_dict[str(im_id)][2]), float(bbox_dict[str(im_id)][3])
 
 # Plot masks
-fig = plt.figure(figsize = (10, 6))
+fig = plt.figure(figsize = (10, 5))
 fig.suptitle(indiv_name, fontsize = 15)
 for i in range(len(masks)):
     # Plot white mask on black background
@@ -78,6 +78,7 @@ for i in range(len(masks)):
     if i == len(masks)-1:
         plt.gca().add_patch(Rectangle((xmin, ymin), w, h,
                                       edgecolor='green', facecolor='none', lw=2))
+    plt.tight_layout(pad = 0.4) # Note: results in error for higher images
     plt.axis('off')
 plt.savefig('../figures/masks_bboxes/MasksBBox_' + indiv_name + '.png', bbox_inches='tight')
 plt.show()

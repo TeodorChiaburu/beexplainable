@@ -23,6 +23,7 @@ for p in parts_lines:
 
 cls_dict = {}
 img_count, cls_count = 1, 1 # in CUB format, class and image indices start with 1
+# Note! Cross entropy needs to start at 0, make sure to subtract 1 from labels when training
 
 classes = open("../classes.txt", "a")
 images = open("../images.txt", "a")
