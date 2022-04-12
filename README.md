@@ -65,4 +65,4 @@ the same as in the [CUB200 dataset](figures/Black_Footed_Albatross_0002_55_bbox.
 The *xml* file to recreate the annotation task in Label Studio can be 
 downloaded from ... (*Link zum eigenen LS repo*).
 
-![Example of mask visualization](figures/masks_bboxes/MasksBBox_Osmia_bicornis_25948103_1.png)
+![Example of mask visualization](figures/masks_bboxes/MasksBBox_Halictus_scabiosae_29962716_1.png)
