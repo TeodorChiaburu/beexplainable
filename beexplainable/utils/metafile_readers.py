@@ -55,11 +55,13 @@ def part_locs_to_dict(metafile_path: str) -> Dict[str, Dict[str, List[str]]]:
     metafile.close()
     return metadict
 
-def bboxes_to_dict(metafile_path: str) -> Dict[str, List[str]]:
+def bboxes_to_dict(metafile_path: str, values_as_strings: bool = True) -> Dict[str, List[str]]:
     """Opens file containing BBox coordinates (in CUB format) and returns is as a dictionary.
 
     :param metafile_path: Path to the file to be read.
     :type metafile_path: str
+    :param values_as_strings: Whether to return bbox coordinates as strings. If *False*, floats are returned. Defaults to *True*
+    :type values_as_strings: bool, optional
     :return: Dictionary of type 'file_id to BBox coords.'
     :rtype: Dict[str, List[str]]
     """
@@ -70,7 +72,10 @@ def bboxes_to_dict(metafile_path: str) -> Dict[str, List[str]]:
     # Read the file line by line, split each line into key and value (separated
     # by white space) and store them in a dictionary
     # The values are lists of BBox coords. (xmin, ymin, w, h)
-    metadict = {ml.split()[0]: ml.split()[1:] for ml in metafile.readlines()}
+    if values_as_strings:
+        metadict = {ml.split()[0]: ml.split()[1:] for ml in metafile.readlines()}
+    else:
+        metadict = {ml.split()[0]: [float(b) for b in ml.split()[1:]] for ml in metafile.readlines()}
     metafile.close()
 
     return metadict

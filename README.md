@@ -12,6 +12,15 @@ For instance, to find the index for the species *Anthidium manicatum*,
 type the species name in the search bar of the *iNaturalist* site and 
 copy the number at the end of the url (it should be 62453).
 
+We checked that the wild bee dataset (both mini and full) did not contain 
+duplicates from the [iNat Challenge 2021](https://www.kaggle.com/c/inaturalist-2021), 
+since we may be interested in utilizing models pretrained on that task. We 
+also checked for duplicates within our own datasets and it turned out 
+that the scraper did indeed download some images twice (either because 
+of the Internet connection going down or because the iNat users themselves 
+uploaded the same foto more than once). These duplicates were subsequently 
+removed.
+
 **To Do**: can't load more than 100 pages. After the 100th page, the 
 browser is requesting log-in credentials. 
 

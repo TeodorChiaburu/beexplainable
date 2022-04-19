@@ -4,6 +4,14 @@ beexplainable.utils package
 Submodules
 ----------
 
+beexplainable.utils.annot\_computers module
+-------------------------------------------
+
+.. automodule:: beexplainable.utils.annot_computers
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 beexplainable.utils.metafile\_readers module
 --------------------------------------------
 

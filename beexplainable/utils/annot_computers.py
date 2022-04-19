@@ -8,7 +8,7 @@ import numpy as np
 from typing import Tuple, List
 from skimage.measure import regionprops
 from scipy.ndimage.morphology import binary_closing
-from label_studio_converter.brush import decode_rle
+from label_studio_converter.brush import decode_rle # comment out before sphinx make html
 
 def rle_to_matrix(rle_arr: np.ndarray, dims: Tuple[int, int]) -> np.ndarray:
     """Converts an array of RLE strings into a 2d matrix of 1s and 0s defining \
@@ -75,5 +75,5 @@ def cub_bbox_from_mask(obj_mask: np.ndarray) -> Tuple[float]:
     # Note: regionprops[0].bbox = [ymin, xmin, ymax, xmax]
     bbox = regionprops(obj_mask)[0].bbox
 
-    # Get BBox coords. according to CUB format
+    # Get BBox coords. according to CUB format (xmin, ymin, w, h)
     return float(bbox[1]), float(bbox[0]), float(bbox[3] - bbox[1]), float(bbox[2] - bbox[0])

@@ -54,9 +54,9 @@ for part_id in ex_part_locs:
 masks.append( ('Whole Insect', ac.union_of_masks(masks)) )
 
 # Get dictionary of file ID and BBox coords.
-bbox_dict = mr.bboxes_to_dict(BBOX_PATH)
-xmin, ymin, w, h = float(bbox_dict[str(im_id)][0]), float(bbox_dict[str(im_id)][1]), \
-                   float(bbox_dict[str(im_id)][2]), float(bbox_dict[str(im_id)][3])
+bbox_dict = mr.bboxes_to_dict(BBOX_PATH, values_as_strings = False)
+xmin, ymin, w, h = bbox_dict[str(im_id)][0], bbox_dict[str(im_id)][1], \
+                   bbox_dict[str(im_id)][2], bbox_dict[str(im_id)][3]
 
 # Plot masks
 fig = plt.figure(figsize = (10, 5))
