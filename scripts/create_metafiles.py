@@ -12,7 +12,7 @@ with open(ANNOT_PATH, 'r') as f:
 # Dictionary of part annotations for every image
 # Each part is assigned a dictionary containing the mapping from the image index to the list of RLE coords. of the mask
 # Note: it is guaranteed that each image contains all body parts masked by one single region
-parts = open("../parts.txt", "r")
+parts = open("../metafiles/parts.txt", "r")
 parts_lines = parts.readlines()
 parts.close()
 parts_dict = {}
@@ -25,10 +25,11 @@ cls_dict = {}
 img_count, cls_count = 1, 1 # in CUB format, class and image indices start with 1
 # Note! Cross entropy needs to start at 0, make sure to subtract 1 from labels when training
 
-classes = open("../classes.txt", "a")
-images = open("../images.txt", "a")
-image_class_labels = open("../image_class_labels.txt", "a")
-part_locs = open("../part_locs.txt", "a") # file index + part index + RLE
+classes = open("../metafiles/classes.txt", "a")
+images = open("../metafiles/images.txt", "a")
+widths_heights = open("../metafiles/widths_heights.txt", "a")
+image_class_labels = open("../metafiles/image_class_labels.txt", "a")
+part_locs = open("../metafiles/part_locs.txt", "a") # file index + part index + RLE
 
 # Iterate over images
 for annots in annot_file:
@@ -54,6 +55,12 @@ for annots in annot_file:
     # Annotations are stored under 'result'
     annot_result = annots["annotations"][0]["result"]
 
+    # Save img widths and heights
+    # For each part, h and w are stored again.
+    # It is enough to read h and w from the first part annot (annot_result[0]).
+    w, h = annot_result[0]["original_width"], annot_result[0]["original_height"]
+    widths_heights.write(str(img_count) + ' ' + str(w) + ' ' + str(h) + '\n')
+
     # Iterate over part annotations and get RLE coords. for all the regions
     for part_annot in annot_result:
         part = part_annot["value"]["brushlabels"][0] # get the part class
@@ -67,5 +74,6 @@ for annots in annot_file:
 
 classes.close()
 images.close()
+widths_heights.close()
 image_class_labels.close()
 part_locs.close()

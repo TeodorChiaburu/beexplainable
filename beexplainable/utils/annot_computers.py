@@ -2,7 +2,8 @@
 
 import sys
 # Insert libraries paths from 1 on; 0 is the script path
-sys.path.insert(1, '../../label_studio_converter')
+sys.path.insert(1, '../../label_studio_converter') # for scripts
+sys.path.insert(2, './beexplainable/label_studio_converter') # for notebooks
 
 import numpy as np
 from typing import Tuple, List
@@ -77,3 +78,26 @@ def cub_bbox_from_mask(obj_mask: np.ndarray) -> Tuple[float]:
 
     # Get BBox coords. according to CUB format (xmin, ymin, w, h)
     return float(bbox[1]), float(bbox[0]), float(bbox[3] - bbox[1]), float(bbox[2] - bbox[0])
+
+def binary_mask_to_indexes(bin_mask: np.ndarray, output_as_strings: bool = True) -> List:
+    """Returns the 1D-indexes of the 1's in a binary 2d array.
+
+    :param bin_mask: Binary 2d array.
+    :type bin_mask: np.ndarray
+    :param output_as_strings: Whether to return the indexes as strings (for storing into file). If *False*, \
+    indexes are returned as integers. Defaults to *True*.
+    :type output_as_strings: bool
+    :return: List of iD indexes of 1's.
+    :rtype: list of strings or integers
+    """
+
+    cols = bin_mask.shape[1]
+    # Get 2d indexes of 1's
+    mask_ind_2d = np.argwhere(bin_mask == 1)
+
+    if output_as_strings:
+        mask_ind_1d = [str(ind[0]*cols + ind[1]) for ind in mask_ind_2d]
+    else:
+        mask_ind_1d = [ind[0]*cols + ind[1] for ind in mask_ind_2d]
+
+    return mask_ind_1d

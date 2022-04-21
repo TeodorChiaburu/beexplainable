@@ -1,6 +1,6 @@
 """Library for opening metafiles and converting them into dictionaries"""
 
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 def metafile_to_dict(metafile_path: str) -> Dict[str, str]:
     """Opens file from **metafile_path** and returns it as a dictionary os strings. \
@@ -76,6 +76,26 @@ def bboxes_to_dict(metafile_path: str, values_as_strings: bool = True) -> Dict[s
         metadict = {ml.split()[0]: ml.split()[1:] for ml in metafile.readlines()}
     else:
         metadict = {ml.split()[0]: [float(b) for b in ml.split()[1:]] for ml in metafile.readlines()}
+    metafile.close()
+
+    return metadict
+
+def w_h_to_dict(metafile_path: str) -> Dict[str, Tuple[int]]:
+    """Opens file containing widths and heights of original images and returns them as tuples in a dictionary.
+
+    :param metafile_path:
+    :type metafile_path:
+    :return:
+    :rtype:
+    """
+
+    # Read the metafile
+    metafile = open(metafile_path, "r")
+
+    # Read the file line by line, split each line into key and value (separated
+    # by white space) and store them in a dictionary
+    # Width and height are returned as tuple
+    metadict = {ml.split()[0]: (ml.split()[1], ml.split()[2]) for ml in metafile.readlines()}
     metafile.close()
 
     return metadict
