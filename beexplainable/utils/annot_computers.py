@@ -4,6 +4,8 @@ import sys
 # Insert libraries paths from 1 on; 0 is the script path
 sys.path.insert(1, '../../label_studio_converter') # for scripts
 sys.path.insert(2, './beexplainable/label_studio_converter') # for notebooks
+sys.path.insert(3, '..\\..\\label_studio_converter')
+sys.path.insert(4, '.\\beexplainable\\label_studio_converter')
 
 import numpy as np
 from typing import Tuple, List
@@ -80,7 +82,8 @@ def cub_bbox_from_mask(obj_mask: np.ndarray) -> Tuple[float]:
     return float(bbox[1]), float(bbox[0]), float(bbox[3] - bbox[1]), float(bbox[2] - bbox[0])
 
 def binary_mask_to_indexes(bin_mask: np.ndarray, output_as_strings: bool = True) -> List:
-    """Returns the 1D-indexes of the 1's in a binary 2d array.
+    """Returns the 1D-indexes of the 1's in a binary 2d array. By storing 1D indexes instead of x-y-coords. \
+    the size of the binary_masks.txt file is halved. The x-y-coords can be easily computed back (widths.heights.txt needed).
 
     :param bin_mask: Binary 2d array.
     :type bin_mask: np.ndarray
@@ -101,3 +104,6 @@ def binary_mask_to_indexes(bin_mask: np.ndarray, output_as_strings: bool = True)
         mask_ind_1d = [ind[0]*cols + ind[1] for ind in mask_ind_2d]
 
     return mask_ind_1d
+
+def indexes_to_binary_mask(indexes: List) -> np.ndarray:
+    pass

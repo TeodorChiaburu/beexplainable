@@ -20,5 +20,3 @@ plt.xlabel('(xmin, ymin, w, h) = (' + str(xmin) + ', ' + str(ymin) + ', ' + \
                                         str(w) + ', ' + str(h) + ')')
 plt.savefig('../figures/' + cub_ex_name + '_bbox.jpg', bbox_inches='tight')
 plt.show()
-
-

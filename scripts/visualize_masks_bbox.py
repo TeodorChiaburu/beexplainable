@@ -2,14 +2,13 @@
 
 import sys
 # Insert libraries paths from 1 on; 0 is the script path
-sys.path.insert(1, '../label_studio_converter')
-sys.path.insert(2, '../beexplainable')
+sys.path.insert(1, '../beexplainable')
+sys.path.insert(2, '../label_studio_converter')
 
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 from PIL import Image
-from label_studio_converter.brush import decode_rle
 from beexplainable.utils import metafile_readers as mr
 from beexplainable.utils import annot_computers as ac
 
