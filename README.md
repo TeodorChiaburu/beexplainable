@@ -39,6 +39,15 @@ metafiles from the json-files downloaded from Label Studio similar to the
 each row starts with the file ID followed by the body part ID followed by the list of 
 RLE coordinates
 
+Additional annotations have also been created in [derive_contours_bboxes.py](scripts/derive_contours_bboxes.py):
+
+- *bounding_boxes.txt* - each file ID is associated with the bounding box coordinates of the whole object
+- *part_contours.npy* - contour indexes of the binary masks for every body part (the reason behind it is that 
+decoding `RLE` coordinates is relatively time-consuming; therefore, it is preferable to compute the masks only once and store 
+them for later training; however, storing large sparse matrices or their positive indexes is not very efficient and since 
+Numpy or OpenCV save files in `uint8` at least, the contours of the masks were preferred. At training/inference time, 
+the full object masks can easily be retrieved by refilling the contour lines). See an [example](figures/masks_bboxes/Edges_Andrena_fulva_41623103_1.png).
+
 ### Important Note on the `RLE` Format
 
 Beware that the `RLE` format used by Label Studio to store segmentation masks is not 
