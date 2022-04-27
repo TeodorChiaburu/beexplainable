@@ -6,11 +6,13 @@ sys.path.insert(1, '../beexplainable')
 sys.path.insert(2, '../label_studio_converter')
 
 import numpy as np
+import tensorflow as tf
 from PIL import Image
 import cv2 as cv
 import matplotlib.pyplot as plt
 from beexplainable.utils import metafile_readers as mr
 from beexplainable.utils import annot_computers as ac
+from beexplainable.preprocessing import parsers_deprecated as ps
 
 # Pick a file example, and part ID
 file_id, part_id = '500', '2'
@@ -50,8 +52,12 @@ edges_cv = cv.drawContours(blank, # destination image (NOT source bin_mask!)
 refilled = cv.drawContours(blank, contours, -1, color=(255, 255, 255),
                            thickness=-1)//255 # neg. thickness to fill the shape
 
+# Overlay mask on original image and cover up background pixels
+overlay = np.copy(img)
+overlay[ refilled == 0 ] = np.array([255, 255, 255], dtype = np.uint8)
+
 # Plot results
-rows, cols = 2, 2
+rows, cols = 2, 3
 plt.figure(figsize = (5, 5))
 plt.subplot(rows, cols, 1)
 plt.imshow(img)
@@ -60,7 +66,7 @@ plt.axis('off')
 
 plt.subplot(rows, cols, 2)
 plt.imshow(bin_mask, interpolation='none')
-plt.title('Original mask thorax')
+plt.title('Original thorax')
 plt.axis('off')
 
 plt.subplot(rows, cols, 3)
@@ -68,9 +74,16 @@ plt.imshow(edges_cv, interpolation='none')
 plt.title('Contours')
 plt.axis('off')
 
-plt.subplot(rows, cols, 4)
+plt.subplot(rows, cols, 5)
 plt.imshow(refilled, interpolation='none')
 plt.title('Refilling')
+plt.axis('off')
+
+plt.subplot(rows, cols, 6)
+swap_bin = 255*(tf.ones_like(refilled)-refilled)
+swap_back = tf.stack((swap_bin,)*3, axis = -1)
+plt.imshow(img * tf.stack((refilled,) * 3, axis = -1) + swap_back, interpolation='none')
+plt.title('Overlay')
 plt.axis('off')
 
 plt.savefig('../figures/masks_bboxes/Edges_' + indiv_name + '.png', bbox_inches='tight')

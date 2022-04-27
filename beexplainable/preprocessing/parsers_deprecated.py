@@ -30,22 +30,36 @@ def parse_image(file_id: str, img_lookup, img_w: int, img_h: int, root: str = '.
 
     return img
 
-def parse_image_bbox(img_dict, bbox_dict, src, target):
-    count = 0
-    for file_id in img_dict:
-        filename = img_dict[file_id]
-        img = tf.io.read_file(src + filename)
-        img = tf.io.decode_jpeg(img, channels=3)
-        bbox = bbox_dict[file_id]
-        img = tf.image.crop_to_bounding_box(img, offset_height=tf.cast(bbox[1], tf.int32),
-                                                 offset_width=tf.cast(bbox[0], tf.int32),
-                                                 target_height=tf.cast(bbox[3], tf.int32),
-                                                 target_width=tf.cast(bbox[2], tf.int32))
+def parse_image_bbox(file_id: str, img_lookup, bbox_lookup, img_w: int, img_h: int, root: str = './'):
+    """Read image file, cropping it to the bounding box and resize it to `(img_w, img_h, 3)`.
 
-        tf.keras.utils.save_img(target + filename, img)
-        count += 1
-        if count > 5: break
+    :param file_id: ID of the image to read.
+    :type file_id: str
+    :param img_lookup: Lookup table assigning file ID to file name.
+    :type img_lookup: tf.lookup.StaticHashTable
+    :param bbox_lookup: Lookup table assigning filename to BBox coordinates (xmin, ymin, width, height).
+    :type bbox_lookup: tf.lookup.DenseHashTable
+    :param img_w: Image width after resizing.
+    :type img_w: int
+    :param img_h: Image height after resizing.
+    :type img_h: int
+    :param root: Root path where the image is stored. Defaults to current folder `./`.
+    :type root: str
+    :return: Decoded image.
+    :rtype: Tensor
+    """
 
+    # Retrieve file name from file ID
+    filename = img_lookup.lookup(file_id)
+    img = tf.io.read_file(root + filename)
+    img = tf.io.decode_jpeg(img, channels=3)
+    bbox = bbox_lookup.lookup(file_id) # get coords. from filename
+    # Note: the cropping function needs bbox coords as integers in order to manipulate the image on pixel level (also integers)
+    img = tf.image.crop_to_bounding_box(img, offset_height = tf.cast(bbox[1], tf.int32), offset_width = tf.cast(bbox[0], tf.int32),
+                                             target_height = tf.cast(bbox[3], tf.int32), target_width = tf.cast(bbox[2], tf.int32))
+    img = tf.image.resize(img, [img_w, img_h])
+
+    return img
 
 def overlay_mask(img, mask, background_col: List[int] = np.array([255, 255, 255], dtype = np.uint8)):
     """Overlay binary mask over original image. Pixels not belonging to mask are colored differently.
