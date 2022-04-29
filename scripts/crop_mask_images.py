@@ -6,30 +6,41 @@ sys.path.insert(1, '../beexplainable')
 sys.path.insert(2, '../label_studio_converter')
 
 import numpy as np
-from beexplainable.utils import annot_computers as ac # an extra prefix beexplainable. may be needed
 from beexplainable.utils import metafile_readers as mr
-from beexplainable.modelling import classifiers as cls
-from beexplainable.preprocessing import parsers as ps
+from beexplainable.preprocessing import dataset_transformers as dt
 
 # Metafile paths
-BEES_PATH = '../data/data_lstudio/Bees_Christian/'
-BEES_PATH_BBOX = '../data/data_lstudio/Bees_Christian_bbox/'
-IMAGES_PATH = './beexplainable/metafiles/images.txt'
-W_H_PATH = './beexplainable/metafiles/widths_heights.txt'
-IMAGES_LABELS_PATH = './beexplainable/metafiles/image_class_labels.txt'
-CLASSES_PATH = './beexplainable/metafiles/classes.txt'
-MODELS_PATH = './beexplainable/models/'
-BBOX_PATH = './beexplainable/metafiles/bounding_boxes.txt'
-PART_CONTOURS = './beexplainable/metafiles/part_contours.npy'
+BEES_PATH = '../../../data/data_lstudio/Bees_Christian/'
+BEES_PATH_BBOX = '../../../data/data_lstudio/Bees_Christian_bbox/'
+BEES_PATH_MASK = '../../../data/data_lstudio/Bees_Christian_masked/'
+BEES_PATH_MASK_WHOLE = '../../../data/data_lstudio/Bees_Christian_masked/Whole/'
+BEES_PATH_MASK_BBOX = '../../../data/data_lstudio/Bees_Christian_masked_bbox/'
+IMAGES_PATH = '../metafiles/images.txt'
+W_H_PATH = '../metafiles/widths_heights.txt'
+BBOX_PATH = '../metafiles/bounding_boxes.txt'
+PARTS_PATH = '../metafiles/parts.txt'
+PART_CONTOURS = '../metafiles/part_contours.npy'
 
 # Read images and metafiles
 img_dict  = mr.metafile_to_dict(IMAGES_PATH)
-bbox_dict = mr.bboxes_to_dict(BBOX_PATH, values_as_strings = True)
+parts_dict = mr.metafile_to_dict(PARTS_PATH)
+bbox_dict = mr.bboxes_to_dict(BBOX_PATH, values_as_strings = False)
 w_h_dict = mr.w_h_to_dict(W_H_PATH)
 with open(PART_CONTOURS, "rb") as f:
     contours = np.load(f, allow_pickle=True)
 
 ### 1. Crop images to bounding boxes and store them in a separate folder
-ps.parse_image_bbox(img_dict, bbox_dict, src = BEES_PATH, target = BEES_PATH_BBOX)
+dt.crop_images_to_bbox(img_dict, bbox_dict, src=BEES_PATH, target=BEES_PATH_BBOX)
+print('BBox finished')
 
+### 2. Mask body parts in images and store results in a separate folder
+dt.mask_body_parts(img_dict, contours, w_h_dict, parts_dict, src = BEES_PATH, target = BEES_PATH_MASK)
+print('Masked parts finished')
 
+### 3. Mask whole objects and store results in a separate folder
+dt.mask_whole_object(img_dict, contours, w_h_dict, parts_dict, src = BEES_PATH, target = BEES_PATH_MASK_WHOLE)
+print('Masked whole object finished')
+
+### 4. Mask whole objects, then crop to bbox and store results in a separate folder
+dt.mask_whole_object(img_dict, contours, w_h_dict, parts_dict, src = BEES_PATH, target = BEES_PATH_MASK_BBOX, bbox_dict = bbox_dict)
+print('BBox and masked whole object finished')

@@ -38,10 +38,18 @@ for file_id in part_locs_dict:
         bin_mask = ac.rle_to_matrix(part_locs_dict[file_id][part_id], (int(h), int(w)))
 
         # Find contour of binary mask (see test_contours.py)
-        contour = cv.findContours(bin_mask, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)[0][0]
+        contour = cv.findContours(bin_mask, cv.RETR_LIST, cv.CHAIN_APPROX_NONE)[0]
+
+        # Remove artifacts, only store largest contour
+        max_contour_ind, max_len = 0, 0
+        for i in range(len(contour)):
+            if len(contour[i]) > max_len:
+                max_len = len(contour[i])
+                max_contour_ind = i
+        contour = contour[max_contour_ind]
 
         # Prepend file_id and part_id to the contour array
-        contour = np.insert(contour, 0, [[int(file_id), int(part_id)]], axis=0)
+        contour = np.insert(contour, [0], [[int(file_id), int(part_id)]], axis=0)
         contours.append(contour)
 
         # Note: The empty string is just a placeholder for the part index.

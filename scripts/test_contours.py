@@ -6,16 +6,14 @@ sys.path.insert(1, '../beexplainable')
 sys.path.insert(2, '../label_studio_converter')
 
 import numpy as np
-import tensorflow as tf
 from PIL import Image
 import cv2 as cv
 import matplotlib.pyplot as plt
 from beexplainable.utils import metafile_readers as mr
 from beexplainable.utils import annot_computers as ac
-from beexplainable.preprocessing import parsers_deprecated as ps
 
 # Pick a file example, and part ID
-file_id, part_id = '500', '2'
+file_id, part_id = '13', '1'
 
 # Get dictionary of file indexes to file names from images path
 IMAGES_PATH = '../metafiles/images.txt'
@@ -80,9 +78,7 @@ plt.title('Refilling')
 plt.axis('off')
 
 plt.subplot(rows, cols, 6)
-swap_bin = 255*(tf.ones_like(refilled)-refilled)
-swap_back = tf.stack((swap_bin,)*3, axis = -1)
-plt.imshow(img * tf.stack((refilled,) * 3, axis = -1) + swap_back, interpolation='none')
+plt.imshow(overlay, interpolation='none')
 plt.title('Overlay')
 plt.axis('off')
 

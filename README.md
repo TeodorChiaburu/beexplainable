@@ -42,11 +42,15 @@ RLE coordinates
 Additional annotations have also been created in [derive_contours_bboxes.py](scripts/derive_contours_bboxes.py):
 
 - *bounding_boxes.txt* - each file ID is associated with the bounding box coordinates of the whole object
-- *part_contours.npy* - contour indexes of the binary masks for every body part (the reason behind it is that 
+- *part_contours.npy* - contour indexes of the binary masks for every body part. The reason behind it is that 
 decoding `RLE` coordinates is relatively time-consuming; therefore, it is preferable to compute the masks only once and store 
 them for later training; however, storing large sparse matrices or their positive indexes is not very efficient and since 
 Numpy or OpenCV save files in `uint8` at least, the contours of the masks were preferred. At training/inference time, 
-the full object masks can easily be retrieved by refilling the contour lines). See an [example](figures/masks_bboxes/Edges_Andrena_fulva_41623103_1.png).
+the full object masks can easily be retrieved by refilling the contour lines. See an [example](figures/masks_bboxes/Edges_Andrena_fulva_41623103_1.png).
+Note that the first entry in the arrays in this file is always a list of `[file_id, part_id]`.
+
+Based on the meta files, [crop_mask_images.py](scripts/create_metafiles.py) derives separate datasets from the original one 
+by applying different input transformations such as *masking* and *cropping to bounding box*. See [examples](figures/input_transforms).
 
 ### Important Note on the `RLE` Format
 
