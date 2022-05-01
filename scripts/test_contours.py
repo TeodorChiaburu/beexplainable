@@ -16,11 +16,11 @@ from beexplainable.utils import annot_computers as ac
 file_id, part_id = '13', '1'
 
 # Get dictionary of file indexes to file names from images path
-IMAGES_PATH = '../metafiles/images.txt'
+IMAGES_PATH = '../metafiles/Bees_Christian/images.txt'
 images_dict = mr.metafile_to_dict(IMAGES_PATH)
 
 # Get dictionary with file ids, part ids and RLEs from parts path
-PART_LOCS_PATH = '../metafiles/part_locs.txt'
+PART_LOCS_PATH = '../metafiles/Bees_Christian/part_locs.txt'
 part_locs_dict = mr.part_locs_to_dict(PART_LOCS_PATH)
 
 # Find file name in the dictionary and create path to image

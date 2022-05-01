@@ -12,10 +12,10 @@ from PIL import Image
 from beexplainable.utils import metafile_readers as mr
 from beexplainable.utils import annot_computers as ac
 
-IMAGES_PATH = '../metafiles/images.txt'
+IMAGES_PATH = '../metafiles/Bees_Christian/images.txt'
 PARTS_PATH = '../metafiles/parts.txt'
-PART_LOCS_PATH = '../metafiles/part_locs.txt'
-BBOX_PATH = '../metafiles/bounding_boxes.txt'
+PART_LOCS_PATH = '../metafiles/Bees_Christian/part_locs.txt'
+BBOX_PATH = '../metafiles/Bees_Christian/bounding_boxes.txt'
 BEES_PATH = '../../../data/data_lstudio/Bees_Christian/'
 
 # Get dictionary of file indexes to file names from images path

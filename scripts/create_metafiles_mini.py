@@ -26,10 +26,10 @@ img_count, cls_count = 1, 1 # in CUB format, class and image indices start with 
 # Note! Cross entropy needs to start at 0, make sure to subtract 1 from labels when training
 
 classes = open("../metafiles/classes.txt", "a")
-images = open("../metafiles/images.txt", "a")
-widths_heights = open("../metafiles/widths_heights.txt", "a")
-image_class_labels = open("../metafiles/image_class_labels.txt", "a")
-part_locs = open("../metafiles/part_locs.txt", "a") # file index + part index + RLE
+images = open("../metafiles/Bees_Christian/images.txt", "a")
+widths_heights = open("../metafiles/Bees_Christian/widths_heights.txt", "a")
+image_class_labels = open("../metafiles/Bees_Christian/image_class_labels.txt", "a")
+part_locs = open("../metafiles/Bees_Christian/part_locs.txt", "a") # file index + part index + RLE
 
 # Iterate over images
 for annots in annot_file:

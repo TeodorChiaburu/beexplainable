@@ -27,7 +27,7 @@ browser is requesting log-in credentials.
 
 ## Data Preprocessing
 
-The script [create_metafiles.py](scripts/create_metafiles.py) creates 
+The script [create_metafiles.py](scripts/create_metafiles_mini.py) creates 
 metafiles from the json-files downloaded from Label Studio similar to the 
 **CUB200** format. The files created are:
 
@@ -49,7 +49,7 @@ Numpy or OpenCV save files in `uint8` at least, the contours of the masks were p
 the full object masks can easily be retrieved by refilling the contour lines. See an [example](figures/masks_bboxes/Edges_Andrena_fulva_41623103_1.png).
 Note that the first entry in the arrays in this file is always a list of `[file_id, part_id]`.
 
-Based on the meta files, [crop_mask_images.py](scripts/create_metafiles.py) derives separate datasets from the original one 
+Based on the meta files, [crop_mask_images.py](scripts/create_metafiles_mini.py) derives separate datasets from the original one 
 by applying different input transformations such as *masking* and *cropping to bounding box*. See [examples](figures/input_transforms).
 
 ### Important Note on the `RLE` Format

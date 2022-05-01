@@ -11,18 +11,18 @@ from beexplainable.utils import metafile_readers as mr
 from beexplainable.utils import annot_computers as ac
 
 # Get dictionary with file ids, part ids and RLEs from parts path
-PART_LOCS_PATH = '../metafiles/part_locs.txt'
+PART_LOCS_PATH = '../metafiles/Bees_Christian/part_locs.txt'
 part_locs_dict = mr.part_locs_to_dict(PART_LOCS_PATH)
 
 # Open new empty file for BBoxes
-bbox_file = open("../metafiles/bounding_boxes.txt", "a")
+bbox_file = open("../metafiles/Bees_Christian/bounding_boxes.txt", "a")
 
 # Get dictionary with file ids and w-h-tuples
-W_H_PATH = '../metafiles/widths_heights.txt'
+W_H_PATH = '../metafiles/Bees_Christian/widths_heights.txt'
 w_h_dict = mr.w_h_to_dict(W_H_PATH)
 
 # Open new empty file for binary masks
-contour_file = open("../metafiles/part_contours.npy", "wb")
+contour_file = open("../metafiles/Bees_Christian/part_contours.npy", "wb")
 
 # Iterate over RLE dict, compute total object masks and derive BBoxes
 contours = []
