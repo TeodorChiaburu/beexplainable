@@ -5,8 +5,7 @@ import tensorflow as tf
 from tensorflow.keras.layers.experimental.preprocessing import Rescaling
 from typing import List
 
-def parse_image(file_id: str, img_lookup, img_w: int, img_h: int,
-                img_label_lookup = None, cls_lookup = None, root: str = './'):
+def parse_image(file_id: str, img_lookup, img_w: int, img_h: int, root: str = './'):
     """Read image file and resize it to `(img_w, img_h, 3)`.
 
     :param file_id: ID of the image to read.
@@ -17,10 +16,6 @@ def parse_image(file_id: str, img_lookup, img_w: int, img_h: int,
     :type img_w: int
     :param img_h: Image height after resizing.
     :type img_h: int
-    :param img_label_lookup: Lookup table assigning file ID to image label ID. Only needed for the whole dataset. Defaults to None.
-    :type img_label_lookup: tf.lookup.StaticHashTable
-    :param cls_lookup: Lookup table assigning class ID to class name. Only needed for the whole dataset. Defaults to None.
-    :type cls_lookup: tf.lookup.StaticHashTable
     :param root: Root path where the image is stored. Defaults to current folder `./`.
     :type root: str
     :return: Decoded image.
@@ -29,12 +24,7 @@ def parse_image(file_id: str, img_lookup, img_w: int, img_h: int,
 
     # Retrieve file name from file ID
     filename = img_lookup.lookup(file_id)
-    if img_label_lookup is None or cls_lookup is None:
-        img = tf.io.read_file(root + filename)
-    else:
-        lab = img_label_lookup.lookup(file_id) # label of current image
-        cls_name = cls_lookup.lookup(lab)
-        img = tf.io.read_file(root + cls_name + '/' + filename)
+    img = tf.io.read_file(root + filename)
     img = tf.io.decode_jpeg(img, channels = 3)
     img = tf.image.resize(img, [img_w, img_h])
 
