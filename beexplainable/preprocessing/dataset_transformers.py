@@ -31,7 +31,7 @@ def crop_images_to_bbox(img_dict: dict[str, str], bbox_dict: dict[str, Tuple[flo
             plt.imsave(target + filename, img)
 
 def mask_body_parts(img_dict: dict[str, str], contours: np.ndarray, w_h_dict: dict[str, Tuple[str]], parts_dict: dict[str, str],
-                    src: str, target: str = None):
+                    src: str, target_overlay: str = None, target_mask: str = None):
     """Read images from **img_dict** and mask body parts with masks from **contours**.
 
     :param img_dict: Dictionary mapping file IDs to file names.
@@ -45,8 +45,10 @@ def mask_body_parts(img_dict: dict[str, str], contours: np.ndarray, w_h_dict: di
     :type parts_dict: dict[str, str]
     :param src: Path to source directory of images.
     :type src: str
-    :param target: Path to directory where cropped images should be saved. Defaults to None.
-    :type target: str, optional
+    :param target_overlay: Path to directory where cropped images should be saved. Defaults to None.
+    :type target_overlay: str, optional
+    :param target_mask: Path to directory where masks should be saved. Defaults to None.
+    :type target_mask: str, optional
     """
 
     # Iterate over contour subarrays (for every file ID there are as many contours as body parts)
@@ -67,16 +69,19 @@ def mask_body_parts(img_dict: dict[str, str], contours: np.ndarray, w_h_dict: di
                                        -1, color=(255, 255, 255),
                                        thickness=-1)//255 # neg. thickness to fill the shape
 
+            if target_mask is not None:
+                plt.imsave(target_mask + parts_dict[str(part_id)] + '/' + filename, refilled, cmap = plt.cm.gray)
+
             # Multiply original image with mask
             overlay = np.copy(img)
             overlay[refilled == 0] = np.array([255, 255, 255], dtype=np.uint8)
 
-            if target is not None:
-                plt.imsave(target + parts_dict[str(part_id)] + '/' + filename, overlay)
+            if target_overlay is not None:
+                plt.imsave(target_overlay + parts_dict[str(part_id)] + '/' + filename, overlay)
 
 
 def mask_whole_object(img_dict: dict[str, str], contours: np.ndarray, w_h_dict: dict[str, Tuple[str]], parts_dict: dict[str, str],
-                      src: str, target: str = None, bbox_dict: dict[str, Tuple[float]] = None):
+                      src: str, target_overlay: str = None, target_mask: str = None, bbox_dict: dict[str, Tuple[float]] = None):
     """Read images from **img_dict** and mask whole object with union of masks from **contours**. \
     Optionally, crop to bounding box.
 
@@ -91,8 +96,10 @@ def mask_whole_object(img_dict: dict[str, str], contours: np.ndarray, w_h_dict: 
     :type parts_dict: dict[str, str]
     :param src: Path to source directory of images.
     :type src: str
-    :param target: Path to directory where cropped images should be saved. Defaults to None.
-    :type target: str, optional
+    :param target_overlay: Path to directory where cropped images should be saved. Defaults to None.
+    :type target_overlay: str, optional
+    :param target_mask: Path to directory where masks should be saved. Defaults to None.
+    :type target_mask: str, optional
     :param bbox_dict: Dictionary mapping file IDs to bbox coords (returned as floats). Defaults to None.
     :type bbox_dict: dict[str, Tuple[float]], optional
     """
@@ -119,6 +126,9 @@ def mask_whole_object(img_dict: dict[str, str], contours: np.ndarray, w_h_dict: 
 
         # Multiply original image with mask for whole body
         obj_mask = ac.union_of_masks(masks)
+        if target_mask is not None:
+            plt.imsave(target_mask + filename, obj_mask, cmap = plt.cm.gray)
+
         overlay = np.copy(img)
         overlay[obj_mask == 0] = np.array([255, 255, 255], dtype=np.uint8)
 
@@ -128,5 +138,5 @@ def mask_whole_object(img_dict: dict[str, str], contours: np.ndarray, w_h_dict: 
             xmin, ymin, w, h = int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3])
             overlay = overlay[ymin : ymin+h, xmin : xmin+w]
 
-        if target is not None:
-            plt.imsave(target + filename, overlay)
+        if target_overlay is not None:
+            plt.imsave(target_overlay + filename, overlay)

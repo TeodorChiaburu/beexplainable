@@ -12,14 +12,16 @@ from beexplainable.preprocessing import dataset_transformers as dt
 # Metafile paths
 BEES_PATH = '../../../data/data_lstudio/Bees_Christian/'
 BEES_PATH_BBOX = '../../../data/data_lstudio/Bees_Christian_bbox/'
-BEES_PATH_MASK = '../../../data/data_lstudio/Bees_Christian_masked/'
-BEES_PATH_MASK_WHOLE = '../../../data/data_lstudio/Bees_Christian_masked/Whole/'
-BEES_PATH_MASK_BBOX = '../../../data/data_lstudio/Bees_Christian_masked_bbox/'
+BEES_PATH_MASKED = '../../../data/data_lstudio/Bees_Christian_masked/'
+BEES_PATH_MASKED_WHOLE = '../../../data/data_lstudio/Bees_Christian_masked/Whole/'
+BEES_PATH_MASKED_BBOX = '../../../data/data_lstudio/Bees_Christian_masked_bbox/'
+BEES_PATH_MASKS = '../../../data/data_lstudio/Bees_Christian_masks/'
+BEES_PATH_MASKS_WHOLE = '../../../data/data_lstudio/Bees_Christian_masks/Whole/'
 IMAGES_PATH = '../metafiles/Bees_Christian/images.txt'
 W_H_PATH = '../metafiles/Bees_Christian/widths_heights.txt'
 BBOX_PATH = '../metafiles/Bees_Christian/bounding_boxes.txt'
-PARTS_PATH = '../metafiles/parts.txt'
-PART_CONTOURS = '../metafiles/part_contours.npy'
+PARTS_PATH = '../metafiles/Bees_Christian/parts.txt'
+PART_CONTOURS = '../metafiles/Bees_Christian/part_contours.npy'
 
 # Read images and metafiles
 img_dict  = mr.metafile_to_dict(IMAGES_PATH)
@@ -34,13 +36,16 @@ dt.crop_images_to_bbox(img_dict, bbox_dict, src=BEES_PATH, target=BEES_PATH_BBOX
 print('BBox finished')
 
 ### 2. Mask body parts in images and store results in a separate folder
-dt.mask_body_parts(img_dict, contours, w_h_dict, parts_dict, src = BEES_PATH, target = BEES_PATH_MASK)
+dt.mask_body_parts(img_dict, contours, w_h_dict, parts_dict, src = BEES_PATH,
+                   target_overlay = BEES_PATH_MASKED, target_mask = BEES_PATH_MASKS)
 print('Masked parts finished')
 
 ### 3. Mask whole objects and store results in a separate folder
-dt.mask_whole_object(img_dict, contours, w_h_dict, parts_dict, src = BEES_PATH, target = BEES_PATH_MASK_WHOLE)
+dt.mask_whole_object(img_dict, contours, w_h_dict, parts_dict, src = BEES_PATH,
+                     target_overlay = BEES_PATH_MASKED_WHOLE, target_mask = BEES_PATH_MASKS_WHOLE)
 print('Masked whole object finished')
 
 ### 4. Mask whole objects, then crop to bbox and store results in a separate folder
-dt.mask_whole_object(img_dict, contours, w_h_dict, parts_dict, src = BEES_PATH, target = BEES_PATH_MASK_BBOX, bbox_dict = bbox_dict)
+dt.mask_whole_object(img_dict, contours, w_h_dict, parts_dict, src = BEES_PATH,
+                     target_overlay = BEES_PATH_MASKED_BBOX, bbox_dict = bbox_dict)
 print('BBox and masked whole object finished')
