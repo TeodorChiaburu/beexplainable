@@ -16,7 +16,7 @@ bees_subfolder = '22_species/' if compress_B_lucorum else '25_species/'
 CLASSES_PATH = "../metafiles/Bees/" + bees_subfolder + "classes.txt"
 cls_dict = mr.metafile_to_dict(CLASSES_PATH)
 
-images = open("../metafiles/Bees/images.txt", "a")
+images = open("../metafiles/Bees/" + bees_subfolder + "images.txt", "a")
 image_class_labels = open("../metafiles/Bees/" + bees_subfolder + "image_class_labels.txt", "a")
 
 BEES_PATH = '../../../data/data_lstudio/Bees/'
