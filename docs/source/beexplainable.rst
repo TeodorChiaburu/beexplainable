@@ -7,7 +7,9 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   beexplainable.utils
+   beexplainable.preprocessing
+   beexplainable.modelling
+   beexplainable.utils 
 
 Module contents
 ---------------

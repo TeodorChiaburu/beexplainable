@@ -3,17 +3,17 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import cv2 as cv
-from typing import List, Tuple
+from typing import Dict, Tuple
 from beexplainable.utils import annot_computers as ac
 
 
-def crop_images_to_bbox(img_dict: dict[str, str], bbox_dict: dict[str, Tuple[float]], src: str, target: str = None):
+def crop_images_to_bbox(img_dict: Dict[str, str], bbox_dict: Dict[str, Tuple[float]], src: str, target: str = None):
     """Read images from **img_dict**, crop them to bounding box coords. from **bbox_dict**.
 
     :param img_dict: Dictionary mapping file IDs to file names.
-    :type img_dict: dict[str, str]
+    :type img_dict: Dict[str, str]
     :param bbox_dict: Dictionary mapping file IDs to bbox coords (returned as floats).
-    :type bbox_dict: dict[str, Tuple[float]]
+    :type bbox_dict: Dict[str, Tuple[float]]
     :param src: Path to source directory of images.
     :type src: str
     :param target: Path to directory where cropped images should be saved. Defaults to None.
@@ -30,19 +30,19 @@ def crop_images_to_bbox(img_dict: dict[str, str], bbox_dict: dict[str, Tuple[flo
         if target is not None:
             plt.imsave(target + filename, img)
 
-def mask_body_parts(img_dict: dict[str, str], contours: np.ndarray, w_h_dict: dict[str, Tuple[str]], parts_dict: dict[str, str],
+def mask_body_parts(img_dict: Dict[str, str], contours: np.ndarray, w_h_dict: Dict[str, Tuple[str]], parts_dict: Dict[str, str],
                     src: str, target_overlay: str = None, target_mask: str = None):
     """Read images from **img_dict** and mask body parts with masks from **contours**.
 
     :param img_dict: Dictionary mapping file IDs to file names.
-    :type img_dict: dict[str, str]
+    :type img_dict: Dict[str, str]
     :param contours: Numpy array containing body part contours for every file ID. \
     Its shape should be *((num_files \dot num_parts) x num_contour_points x 1 x 2)*. The first tuple should contain `(file_id, part_id)`.
     :type contours: np.ndarray
     :param w_h_dict: Dictionary mapping file IDs to tuples of widths and heights for the original image.
-    :type w_h_dict: dict[str, Tuple[str]]
+    :type w_h_dict: Dict[str, Tuple[str]]
     :param parts_dict: Dictionary mapping file IDs to names of body parts.
-    :type parts_dict: dict[str, str]
+    :type parts_dict: Dict[str, str]
     :param src: Path to source directory of images.
     :type src: str
     :param target_overlay: Path to directory where cropped images should be saved. Defaults to None.
@@ -80,20 +80,20 @@ def mask_body_parts(img_dict: dict[str, str], contours: np.ndarray, w_h_dict: di
                 plt.imsave(target_overlay + parts_dict[str(part_id)] + '/' + filename, overlay)
 
 
-def mask_whole_object(img_dict: dict[str, str], contours: np.ndarray, w_h_dict: dict[str, Tuple[str]], parts_dict: dict[str, str],
-                      src: str, target_overlay: str = None, target_mask: str = None, bbox_dict: dict[str, Tuple[float]] = None):
+def mask_whole_object(img_dict: Dict[str, str], contours: np.ndarray, w_h_dict: Dict[str, Tuple[str]], parts_dict: Dict[str, str],
+                      src: str, target_overlay: str = None, target_mask: str = None, bbox_dict: Dict[str, Tuple[float]] = None):
     """Read images from **img_dict** and mask whole object with union of masks from **contours**. \
     Optionally, crop to bounding box.
 
     :param img_dict: Dictionary mapping file IDs to file names.
-    :type img_dict: dict[str, str]
+    :type img_dict: Dict[str, str]
     :param contours: Numpy array containing body part contours for every file ID. \
     Its shape should be *((num_files \dot num_parts) x num_contour_points x 1 x 2)*. The first tuple should contain `(file_id, part_id)`.
     :type contours: np.ndarray
     :param w_h_dict: Dictionary mapping file IDs to tuples of widths and heights for the original image.
-    :type w_h_dict: dict[str, Tuple[str]]
+    :type w_h_dict: Dict[str, Tuple[str]]
     :param parts_dict: Dictionary mapping file IDs to names of body parts.
-    :type parts_dict: dict[str, str]
+    :type parts_dict: Dict[str, str]
     :param src: Path to source directory of images.
     :type src: str
     :param target_overlay: Path to directory where cropped images should be saved. Defaults to None.
@@ -101,7 +101,7 @@ def mask_whole_object(img_dict: dict[str, str], contours: np.ndarray, w_h_dict: 
     :param target_mask: Path to directory where masks should be saved. Defaults to None.
     :type target_mask: str, optional
     :param bbox_dict: Dictionary mapping file IDs to bbox coords (returned as floats). Defaults to None.
-    :type bbox_dict: dict[str, Tuple[float]], optional
+    :type bbox_dict: Dict[str, Tuple[float]], optional
     """
 
     # Iterate over contour subarrays (for every file ID there are as many contours as body parts)
