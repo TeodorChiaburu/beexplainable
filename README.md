@@ -9,9 +9,6 @@
 * [Training and Validation](#training-and-validation)
 * [XAI Experiments](#xai-experiments)
 
-**Note:** Visit our [online documentation](https://beexplainable.readthedocs.io/en/latest/) for 
-an in-depth description of the software modules.
-
 ## Introduction
 
 A [study](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0185809) 
