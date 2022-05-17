@@ -1,5 +1,44 @@
 # XAI Experiments on a dataset of wild bees
 
+## Table of Contents
+
+* [Introduction](#introduction)
+* [Data Acquisition](#data-acquisition)
+* [Data Annotation](#data-annotation)
+* [Data Preprocessing](#data-preprocessing)
+* [Training and Validation](#training-and-validation)
+* [XAI Experiments](#xai-experiments)
+
+## Introduction
+
+A [study](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0185809) 
+published in 2017 revealed a shocking 75% decline in insect biomass in German 
+nature protected areas over the past 27 years, mainly because of pesticides, 
+intensive farming and climatic changes. But not only the overall number of 
+insects has dramatically sunken. The 33,000 different species that used to 
+find their habitat in Germany are rapidly vanishing. Multiple organizations 
+along with the German Ministry of Environment have joined forces to curb 
+the dramatic decrease of insect diversity. Steps have already been taken 
+to determine which areas are primarily affected by insect depopulation and 
+which species face a high risk of extinction (see [Insektensommer](https://www.nabu.de/tiere-und-pflanzen/aktionen-und-projekte/insektensommer/index.html?ref=nav) 
+and [DINA](https://www.dina-insektenforschung.de/) - articles in German). 
+This is called **insect monitoring** and, given the current availability of 
+technology, the goal is to construct automatic systems able to recognize 
+insect species without needing to trap and kill any insects. 
+
+Automated insect monitoring requires accurate computer vision (CV) models 
+and development of these models, in turn, requires high quality datasets. 
+Building such datasets is difficult, as there are few domain experts 
+(entomologists) that can annotate images of rare species.
+
+In an ideal human-machine collaborative setting, a Machine Learning (ML) 
+algorithm could assist human experts annotating images of rare species 
+by automatically annotating some images and referring others to domain 
+experts. When working with such complex structures as an insect taxonomic 
+tree, model explainability becomes a requirement rather than a nice-to-have 
+feature. The entomologists delegated to supervise the monitoring procedure 
+need to understand what exactly led their model to the given output.
+
 ## Data Acquisition
 
 The script [webscraper_inat.py](scripts/webscraper_inat.py) downloads 
@@ -29,6 +68,8 @@ been selected and further annotated in [Label Studio](https://labelstud.io/).
 The mini dataset eventually contained 726 images for 25 bee species.
 More specifically, the insects' main body parts have been segmented through 
 brushing (see next section).
+
+**GIF**
 
 ## Data Preprocessing
 
@@ -102,27 +143,63 @@ the same as in the [CUB200 dataset](figures/Black_Footed_Albatross_0002_55_bbox.
 We have trained a `ResNet50` initialized with a backbone pretrained on the 
 [iNat 2021 challenge](https://www.kaggle.com/c/inaturalist-2021) complemented with a linear classifier on the top. 
 The *whole* dataset has been used for training and cross validation, while the *mini* dataset 
-was kept as test set. Our model's performance compares to similar models trained on other fine-grained tasks - 
-[Horn et al.](http://arxiv.org/abs/2103.16483). 
+was kept as test set. We report **0.78 top-1** and **0.95 top-3 accuracy** on the test set, which is competitive 
+with similar state-of-the-art fine-grained models - [Horn et al.](http://arxiv.org/abs/2103.16483). 
 
-![Confusion matrix](figures/conf_mat/ResNet50_iNat_raw.png)
+![Confusion matrix](figures/conf_mat/ResNet50_iNat_raw_confmat.png)
 
 More details regarding the model 
 architecture, hypertuning process, as well as training and validation scores can 
-be found the cooresponding [notebooks](notebooks) and on our freely online available 
+be found in the cooresponding [notebooks](notebooks), plots for [training curves](figures/training_curves), 
+[ROC-AUC curves](figures/roc_auc), [worst predictions](figures/worst_preds) and on our freely online available 
 [TensorBoard Experiment](https://tensorboard.dev/experiment/VwaTD5OBSwuxpgK2JH4wCA/#).
 
 ## XAI Experiments
 
+### Motivation and Related Work
+
+When working with such complex structures as an insect taxonomic tree, 
+model explainability becomes a requirement rather than a nice-to-have feature. 
+The entomologists delegated to supervise the monitoring procedure need to 
+understand what exactly led their model to the given output. 
+Nowadays, there is a wide array of [XAI methods](https://christophm.github.io/interpretable-ml-book/index.html) 
+and going into the details of all the possible categorisations would exceed 
+the scope of this preliminary work.
+
+The XAI community has been working arduously in the past years to develop 
+new XAI methods - [Guidotti et al.](https://arxiv.org/abs/1802.01933) - as well as to formalize the notions of 
+*explanation* and *explainability* - [Doshi et al.](https://arxiv.org/abs/1702.08608) 
+It has been acknowledged that a key requirement to better these methods 
+are quality metrics for XAI, so that model explanations can be evaluated 
+and compared to one another - [Adebayo et al. 2018](http://arxiv.org/abs/1810.03292), 
+[Adebayop et al. 2020](http://arxiv.org/abs/2011.05429), [Kindermans et al.](http://arxiv.org/abs/1711.00867) 
+Next to automated evaluations of XAI methods, researchers also investigated 
+XAI methods in human-in-the-loop settings - [Hase and Bansal](https://arxiv.org/abs/2005.01831), but it remains unclear 
+to what extent these two types of evaluations are related - [Bießmann and Refiano](http://arxiv.org/abs/2107.02033), 
+[Borowski et al](https://arxiv.org/abs/2010.12606).
+
 For conducting and evaluating the upcoming XAI experiments, the following libraries 
 were used: [tf-explain](https://github.com/sicara/tf-explain), [iNNvestigate](https://github.com/albermax/innvestigate) 
-and [quantus](https://github.com/understandable-machine-intelligence-lab/Quantus).
-
-### Example of Feature Attribution Maps
+(for computing the explanations) and [quantus](https://github.com/understandable-machine-intelligence-lab/Quantus) 
+(for evaluating them). In the initial stages of our research, we decided to focus our 
+attention on **post hoc feature attribution based methods**, also known as **saliency maps** 
+(see example below).
 
 ![Example of saliency map](figures/saliency/ResNet50_iNat_raw_Xylocopa_violacea_sal.jpg)
 
-### Monte-Carlo Dropout and Pixel Flipping
+The maps are normalized from 0 (blue) to 1 (red).
+
+### Evaluation
+
+The authors of *quantus* define a simple set of 'desiderata', that is, 
+properties that good XAI methods are expected to have: *faithfulness*, 
+*localisation*, *robustness*, *complexity*, *randomisation* and *axiomatic properties*. 
+For our work, we decided to first investigate the first two and provide initial 
+results. 
+
+#### Localisation via Segmentation Masks
+
+#### Faithfulness via Monte-Carlo Dropout and Pixel Flipping
 
 #### Example of Pixel Flipping w.r.t. 3 Saliency Maps
 
