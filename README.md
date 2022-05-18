@@ -1,5 +1,10 @@
 # XAI Experiments on a dataset of wild bees
 
+<img src="https://img.shields.io/badge/TensorFlow-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white" />
+
+[![Documentation](https://img.shields.io/badge/api-reference-blue.svg)](https://beexplainable.readthedocs.io/en/latest/)
+[![GPLv3 license](https://img.shields.io/badge/License-GPLv3-blue.svg)](http://perso.crans.org/besson/LICENSE.html)
+
 ## Table of Contents
 
 * [Introduction](#introduction)
