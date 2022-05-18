@@ -5,12 +5,12 @@
 sphinx:
   configuration: docs/source/conf.py
 
-# workaround for python 3.9
+# Set the version of Python and other tools you might need
 build:
-  image: testing
+  tools:
+    python: "3.9"
 
 # Optionally set the version of Python and requirements required to build your docs
 python:
-   version: "3.9"
    install:
    - requirements: requirements.txt
