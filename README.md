@@ -79,6 +79,9 @@ brushing, as in the image below:
     <img src="figures/input_transforms/lstudio_masks.gif" width="300">
 </p>
 
+The annotated images and segmentation masks can be downloaded from [here](https://zenodo.org/record/6642157). 
+Further details on how to decode the mask coordinates follow below.
+
 ## Data Preprocessing
 
 The scripts [create_metafiles_mini.py](scripts/create_metafiles_mini.py) and 
