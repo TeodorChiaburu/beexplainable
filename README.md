@@ -298,3 +298,24 @@ model, the dataset and the evaluations provided in this work will
 help researchers to develop models, XAI methods and ML-assisted 
 annotation tools to support entomologists and ultimately improve 
 our understanding of biodiversity.
+
+## Citation
+
+The accompanying paper submitted and presented on the XAI Workshop of 
+CVPR 2022 can be downloaded [here](https://arxiv.org/abs/2206.07497).
+
+If you find our work interesting or useful in your research, please cite us 
+as follows:
+
+```
+@misc{https://doi.org/10.48550/arxiv.2206.07497,
+      doi = {10.48550/ARXIV.2206.07497}, 
+      url = {https://arxiv.org/abs/2206.07497}, 
+      author = {Chiaburu, Teodor and Biessmann, Felix and Hausser, Frank},
+      keywords = {Artificial Intelligence (cs.AI), FOS: Computer and information sciences, FOS: Computer and information sciences}, 
+      title = {Towards ML Methods for Biodiversity: A Novel Wild Bee Dataset and Evaluations of XAI Methods for ML-Assisted Rare Species Annotations},
+      publisher = {arXiv}, 
+      year = {2022}, 
+      copyright = {Creative Commons Attribution Non Commercial Share Alike 4.0 International}
+}
+```
