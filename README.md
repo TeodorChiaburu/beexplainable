@@ -12,6 +12,7 @@
 
 ## Table of Contents
 
+* [Installation](#installation)
 * [Introduction](#introduction)
 * [Data Acquisition](#data-acquisition)
 * [Data Annotation](#data-annotation)
@@ -20,6 +21,14 @@
 * [XAI Experiments](#xai-experiments)
 * [Conclusion](#conclusion)
 * [Citation](#citation)
+
+## Installation
+
+In order to run some of the experiments in this repository, you will need the following libraries:
+
+* [quantus](https://github.com/understandable-machine-intelligence-lab/Quantus): for computing the localisation metrics
+* [tf-explain](https://github.com/sicara/tf-explain) and [innvestigate](https://github.com/albermax/innvestigate): for the rest of the XAI notebooks
+* [wingbeats](https://github.com/TeodorChiaburu/wingbeats): for building the CNNs
 
 ## Introduction
  
