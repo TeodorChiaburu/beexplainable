@@ -26,6 +26,7 @@
 
 In order to run some of the experiments in this repository, you will need the following libraries:
 
+* [labelstudio-converter](https://github.com/heartexlabs/label-studio-converter): for reading segmentation masks annotated in Label Studio
 * [quantus](https://github.com/understandable-machine-intelligence-lab/Quantus): for computing the localisation metrics
 * [tf-explain](https://github.com/sicara/tf-explain) and [innvestigate](https://github.com/albermax/innvestigate): for the rest of the XAI notebooks
 * [wingbeats](https://github.com/TeodorChiaburu/wingbeats): for building the CNNs
