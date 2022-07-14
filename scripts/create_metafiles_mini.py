@@ -1,4 +1,5 @@
 """Create metafiles for the mini wildbee dataset (formats inspired by CUB200)"""
+"""Note: in order to generate image_class_labels.txt for 22 species mini, use the script create_metafiles_all.py"""
 
 import json
 
