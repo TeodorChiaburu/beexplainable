@@ -8,7 +8,7 @@ sys.path.insert(1, '../beexplainable')
 import glob
 from beexplainable.utils import metafile_readers as mr
 
-bees_folder = 'Bees_Christian/' #'Bees' for training set, 'Bees_Christian' for test set
+bees_folder = 'Bees_Christian/' #'Bees/' for training set, 'Bees_Christian' for test set
 
 # Should the 4 similar Bombus species be compressed into one single species?
 compress_B_lucorum = True
@@ -22,7 +22,12 @@ cls_dict = mr.metafile_to_dict(CLASSES_PATH)
 image_class_labels = open("../metafiles/" + bees_folder + bees_subfolder + "image_class_labels.txt", "a")
 
 BEES_PATH = '../../../data/data_lstudio/' + bees_folder
-img_paths = glob.glob(BEES_PATH + '*.jpg') if bees_folder == 'Bees_Christian/' else glob.glob(BEES_PATH + '**/*.jpg') # double ** for recursive search (over 30k imgs)
+if bees_folder == 'Bees/':
+    img_paths = glob.glob(BEES_PATH + '**/*.jpg') # double ** for recursive search (over 30k imgs)
+elif bees_folder == 'Bees_Christian/':
+    # Use the already extracted file names in images.txt, otherwise glob.glob will reorder the names
+    IMAGES_PATH = '../metafiles/Bees_Christian/images.txt'
+    img_paths = list( mr.metafile_to_dict(IMAGES_PATH).values() )
 
 for i in range(len(img_paths)):
 
