@@ -120,7 +120,8 @@ def binary_mask_to_rle(bin_mask: np.ndarray) -> Dict[List, List]:
 
     # Iterate through the mask flattened row by row
     # itertools splits the flattened image into sublists of 0's and 1's
-    for i, (value, elements) in enumerate(itertools.groupby(bin_mask.ravel())):
+    # order='F' is important for detectron2, otherwise the mask is flipped
+    for i, (value, elements) in enumerate(itertools.groupby(bin_mask.ravel(order='F'))):
         # Odd counts are for background, even counts for object
         # If the first pixels are part of the object, enter a 0 for background first
         if i == 0 and value == 1:
