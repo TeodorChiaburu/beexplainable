@@ -17,6 +17,7 @@ BEES_PATH_MASKED_WHOLE = '../../../data/data_lstudio/Bees_Christian_masked/Whole
 BEES_PATH_MASKED_BBOX = '../../../data/data_lstudio/Bees_Christian_masked_bbox/'
 BEES_PATH_MASKS = '../../../data/data_lstudio/Bees_Christian_masks/'
 BEES_PATH_MASKS_WHOLE = '../../../data/data_lstudio/Bees_Christian_masks/Whole/'
+BEES_PATH_MASKS_BBOX = '../../../data/data_lstudio/Bees_Christian_masks_bbox/'
 IMAGES_PATH = '../metafiles/Bees_Christian/images.txt'
 W_H_PATH = '../metafiles/Bees_Christian/widths_heights.txt'
 BBOX_PATH = '../metafiles/Bees_Christian/bounding_boxes.txt'
@@ -40,12 +41,17 @@ dt.mask_body_parts(img_dict, contours, w_h_dict, parts_dict, src = BEES_PATH,
                    target_overlay = BEES_PATH_MASKED, target_mask = BEES_PATH_MASKS)
 print('Masked parts finished')
 
-### 3. Mask whole objects and store results in a separate folder
+### 3. Mask body parts in images, then crop to full bbox and store results in a separate folder
+dt.mask_body_parts(img_dict, contours, w_h_dict, parts_dict, src = BEES_PATH,
+                   target_mask = BEES_PATH_MASKS_BBOX, bbox_dict = bbox_dict)
+print('BBox and Masked parts finished')
+
+### 4. Mask whole objects and store results in a separate folder
 dt.mask_whole_object(img_dict, contours, w_h_dict, parts_dict, src = BEES_PATH,
                      target_overlay = BEES_PATH_MASKED_WHOLE, target_mask = BEES_PATH_MASKS_WHOLE)
 print('Masked whole object finished')
 
-### 4. Mask whole objects, then crop to bbox and store results in a separate folder
+### 5. Mask whole objects, then crop to bbox and store results in a separate folder
 dt.mask_whole_object(img_dict, contours, w_h_dict, parts_dict, src = BEES_PATH,
                      target_overlay = BEES_PATH_MASKED_BBOX, bbox_dict = bbox_dict)
 print('BBox and masked whole object finished')

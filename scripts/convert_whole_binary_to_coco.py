@@ -14,7 +14,7 @@ IMAGES_LABELS_PATH = '../metafiles/Bees_Christian/22_species/image_class_labels.
 CLASSES_PATH = '../metafiles/Bees_Christian/22_species/classes.txt'
 BBOX_PATH = '../metafiles/Bees_Christian/bounding_boxes.txt'
 
-# Whether to classify objects as 'Insects' of concrete genus_species
+# Whether to classify objects as 'Insects' or concrete genus_species
 ONE_CLASS = True
 
 # Read metafiles into dictionary
