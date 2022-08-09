@@ -8,26 +8,27 @@ sys.path.insert(1, '../beexplainable')
 import glob
 from beexplainable.utils import metafile_readers as mr
 
-bees_folder = 'Bees_Christian/' #'Bees/' for training set, 'Bees_Christian' for test set
+# Metafile folder
+bees_folder = "../metafiles/Bees/masked/"
 
 # Should the 4 similar Bombus species be compressed into one single species?
 compress_B_lucorum = True
 bees_subfolder = '22_species/' if compress_B_lucorum else '25_species/'
 
 # Read class names
-CLASSES_PATH = "../metafiles/" + bees_folder + bees_subfolder + "classes.txt"
+CLASSES_PATH = bees_folder + bees_subfolder + "classes.txt"
 cls_dict = mr.metafile_to_dict(CLASSES_PATH)
 
-#images = open("../metafiles/" + bees_folder + "images.txt", "a")
-image_class_labels = open("../metafiles/" + bees_folder + bees_subfolder + "image_class_labels.txt", "a")
+images = open(bees_folder + "images.txt", "a")
+image_class_labels = open(bees_folder + bees_subfolder + "image_class_labels.txt", "a")
 
-BEES_PATH = '../../../data/data_lstudio/' + bees_folder
-if bees_folder == 'Bees/':
-    img_paths = glob.glob(BEES_PATH + '**/*.jpg') # double ** for recursive search (over 30k imgs)
-elif bees_folder == 'Bees_Christian/':
+BEES_PATH = '../../../data/data_lstudio/Bees_masked/'
+if 'Christian' in bees_folder:
     # Use the already extracted file names in images.txt, otherwise glob.glob will reorder the names
     IMAGES_PATH = '../metafiles/Bees_Christian/images.txt'
     img_paths = list( mr.metafile_to_dict(IMAGES_PATH).values() )
+else: # for full dataset (raw or masked)
+    img_paths = glob.glob(BEES_PATH + '**/*.jpg')  # double ** for recursive search (over 30k imgs)
 
 for i in range(len(img_paths)):
 
@@ -40,7 +41,7 @@ for i in range(len(img_paths)):
     cls = substrs[0] + '_' + substrs[1]
 
     # Images are stored in extra species subfolders
-    #images.write(str(i + 1) + ' ' + cls + '/' + file_name + '\n')
+    images.write(str(i + 1) + ' ' + cls + '/' + file_name + '\n')
 
     # Compress Bombus if needed
     if compress_B_lucorum:
@@ -53,5 +54,5 @@ for i in range(len(img_paths)):
 
     if i % 1000 == 0: print(i)
 
-#images.close()
+images.close()
 image_class_labels.close()
