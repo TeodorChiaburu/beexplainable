@@ -43,7 +43,7 @@ for i in range(len(img_paths)):
     # Images are stored in extra species subfolders
     images.write(str(i + 1) + ' ' + cls + '/' + file_name + '\n')
 
-    # Compress Bombus if needed
+    # Compress Bombus lucorum if needed
     if compress_B_lucorum:
         if cls in ['Bombus_cryptarum', 'Bombus_magnus', 'Bombus_terrestris']:
             cls = 'Bombus_lucorum'

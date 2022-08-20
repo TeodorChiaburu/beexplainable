@@ -1,12 +1,12 @@
-"""Script to split annotated images into training and validation sets (needed to train YOLO)"""
+"""Script to split annotated images into training and validation sets (needed to train YOLO, ProtoPNet...)"""
 
 import shutil
 from beexplainable.utils import metafile_readers as mr
 
 # Data and metafile paths
-BEES_PATH  = '../../../data/data_lstudio/Bees_Christian_masked_bbox/Whole/'
-TRAIN_PATH = '../../../data/data_lstudio/Bees_Christian_masked_bbox_train/'
-VAL_PATH   = '../../../data/data_lstudio/Bees_Christian_masked_bbox_val/'
+BEES_PATH  = '../../../data/data_lstudio/Bees_Christian_bbox/'
+TRAIN_PATH = '../../../data/data_lstudio/Bees_Christian_bbox_train/'
+VAL_PATH   = '../../../data/data_lstudio/Bees_Christian_bbox_val/'
 IMAGES_PATH = '../metafiles/Bees_Christian/images.txt'
 
 # Read metafiles into dictionary
