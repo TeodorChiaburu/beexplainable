@@ -3,3 +3,5 @@
 models/
 metafiles/
 docs/build/html/
+jspsych_experiment/jspsych/
+!jspsych_experiment/jspsych/plugin-image-keyboard-response.js
