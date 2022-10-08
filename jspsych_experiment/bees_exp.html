@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My experiment</title>
+    <script src="https://unpkg.com/jspsych@7.3.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.1"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-image-keyboard-response@1.1.1"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-preload@1.1.1"></script>
+    <link href="https://unpkg.com/jspsych@7.3.0/css/jspsych.css" rel="stylesheet" type="text/css" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<style>
+		<!-- .row {
+		  display: flex;
+		  flex-wrap: wrap;
+		  padding: 0 4px;
+		}
+
+		/* Create two equal columns that sit next to each other */
+		.column {
+		  flex: 50%;
+		  padding: 0 4px;
+		}
+
+		.column div img {
+		  margin-top: 8px;
+		  vertical-align: middle;
+		  min-width:100px;
+		  max-width:300px;
+          height:auto;
+		} -->
+		
+		html {
+		  box-sizing: border-box;
+		}
+
+		*, *:before, *:after {
+		  box-sizing: inherit;
+		}
+
+		.column {
+		  float: left;
+		  width: 33%;
+		  margin-bottom: 16px;
+		  padding: 0 8px;
+		}
+
+		@media screen and (max-width: 650px) {
+		  .column {
+			width: 100%;
+			display: block;
+		  }
+		}
+
+		.card {
+		  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+		}
+
+		.container {
+		  padding: 0 16px;
+		}
+
+		.container::after, .row::after {
+		  content: "";
+		  clear: both;
+		  display: table;
+		}
+
+		.button {
+		  border: none;
+		  outline: 0;
+		  display: inline-block;
+		  padding: 8px;
+		  color: white;
+		  background-color: #000;
+		  text-align: center;
+		  cursor: pointer;
+		  width: 100%;
+		}
+
+		.button:hover {
+		  background-color: red;
+		}
+	</style>
+  </head>
+  <body></body>
+  <script>
+
+    /* initialize jsPsych */
+    var jsPsych = initJsPsych({
+      on_finish: function() {
+        jsPsych.data.displayData();
+      }
+    });
+
+    /* create timeline */
+    var timeline = [];
+	const protos = ["img/Andrena_bicolor_proto.jpg", "img/Andrena_flavipes_proto.jpg", "img/Andrena_fulva_proto.jpg",
+					"img/Bombus_hortorum_proto.jpg", "img/Bombus_lucorum_proto.jpg", "img/Bombus_pratorum_proto.jpg"];
+	const test_samples = ["img/Andrena_fulva_test.jpg", "img/Bombus_lucorum_test.jpg"];
+	const exps = ["img/Andrena_fulva_exp.png", "img/Bombus_lucorum_exp.png"];
+	
+	var proto_grid = `
+		<div class="row">
+		  <div class="column">
+			<div class="card">
+			  <img src="img/Andrena_bicolor_proto.jpg" alt="bico">
+			  <div class="container">
+				<h3>Andrena bicolor</h3>
+				<p><button class="button"><strong>Press 1</strong></button></p>
+			  </div>
+			</div>
+		  </div>
+
+		  <div class="column">
+			<div class="card">
+			  <img src="img/Bombus_hortorum_proto.jpg" alt="hort">
+			  <div class="container">
+				<h3>Bombus hortorum</h3>
+				<p><button class="button"><strong>Press 4</strong></button></p>
+			  </div>
+			</div>
+		  </div>
+		</div>
+		
+		<div class="row">
+		  <div class="column">
+			<div class="card">
+			  <img src="img/Andrena_flavipes_proto.jpg" alt="flavi">
+			  <div class="container">
+				<h3>Andrena flavipes</h3>
+				<p><button class="button"><strong>Press 2</strong></button></p>
+			  </div>
+			</div>
+		  </div>
+		  
+		  <div class="column">
+			<div class="card">
+			  <img src="img/Bombus_lucorum_proto.jpg" alt="luco">
+			  <div class="container">
+				<h3>Bombus lucorum</h3>
+				<p><button class="button"><strong>Press 5</strong></button></p>
+			  </div>
+			</div>
+		  </div>
+		</div> 
+		
+		<div class="row">
+		  <div class="column">
+			<div class="card">
+			  <img src="img/Andrena_fulva_proto.jpg" alt="fulva">
+			  <div class="container">
+				<h3>Andrena fulva</h3>
+				<p><button class="button"><strong>Press 3</strong></button></p>
+			  </div>
+			</div>
+		  </div>
+
+		  <div class="column">
+			<div class="card">
+			  <img src="img/Bombus_pratorum_proto.jpg" alt="prato">
+			  <div class="container">
+				<h3>Bombus pratorum</h3>
+				<p><button class="button"><strong>Press 6</strong></button></p>
+			  </div>
+			</div>
+		  </div>
+		</div>`;
+
+
+    /* preload images */
+    var preload = {
+      type: jsPsychPreload,
+      images: protos
+    };
+    timeline.push(preload);
+
+    /* define welcome message trial */
+    var welcome = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: "Welcome to the experiment. Press any key to begin."
+    };
+    timeline.push(welcome);
+
+    /* define instructions trial */
+    var instructions = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: `	  
+        <p>In this experiment, you will be shown images of 6 
+		wild bee species.</p><p><strong>Task1</strong>: assign a class to the 
+		test image based on the prototypes shown on the right half of the page.</p>
+        <p><strong>Task2</strong>: assign a class while also knowing what prediction 
+		our model has made.</p><p><strong>Task3</strong>: assign a class while knowing 
+		the model prediction and seeing an explanation for it.</p>
+        <p>Press any key to begin.</p>
+      `
+    };
+    timeline.push(instructions);
+	
+	/* show user prototypes for the first time before starting tasks */
+    var just_protos = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: `	  
+        <p>Before starting the experiment, take your time and look at the 6 samples below.
+		Each of them was chosen as a prototype of their class. Throughout the whole experiment 
+		you will be shown these representative samples next to the test samples to help you 
+		decide which class the test sample belongs to.</p>` + proto_grid + 
+		`<h2>Press any key to begin.</h2>`,
+      post_trial_gap: 1000
+    };
+    timeline.push(just_protos);
+
+    /* define trial stimuli array for timeline variables */      /* why doesn't a for loop work here?! */
+    var test_stimuli = [
+	  { stimulus: test_samples[0],  correct_response: '3'},
+      { stimulus: test_samples[1],  correct_response: '5'}
+    ];
+
+    /* define fixation and test trials */
+    var fixation = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: '<div style="font-size:60px;">+</div>',
+      choices: "NO_KEYS",
+      trial_duration: function(){
+        return jsPsych.randomization.sampleWithoutReplacement([250, 500, 750], 1)[0]; /* how long to wait till next test sample is shown */
+      },
+      data: {
+        task: 'fixation'
+      }
+    };
+
+    var test = {
+      type: jsPsychImageKeyboardResponse,
+      stimulus: jsPsych.timelineVariable('stimulus'),
+      choices: ['1', '2', '3', '4', '5', '6'],
+      data: {
+        task: 'response',
+        correct_response: jsPsych.timelineVariable('correct_response')
+      },
+      on_finish: function(data){
+        data.correct = jsPsych.pluginAPI.compareKeys(data.response, data.correct_response);
+      },
+	  prompt: `<p>What species do you think the insect above belongs to?</p>` + proto_grid
+    };
+
+    /* define test procedure */
+    var test_procedure = {
+      timeline: [fixation, test],
+      timeline_variables: test_stimuli,
+      repetitions: 1,
+      randomize_order: true
+    };
+    timeline.push(test_procedure);
+
+    /* define debrief */
+    var debrief_block = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: function() {
+
+        var trials = jsPsych.data.get().filter({task: 'response'});
+        var correct_trials = trials.filter({correct: true});
+        var accuracy = Math.round(correct_trials.count() / trials.count() * 100);
+        var rt = Math.round(correct_trials.select('rt').mean());
+
+		/* why does it return a NaN when no trial was correct? */
+        return `<p>Num. trials: ${trials.count()}, out of which ${correct_trials.count()} were correct.</p>
+		  <p>You responded correctly on ${accuracy}% of the trials.</p>
+          <p>Your average response time was ${rt}ms.</p>
+          <p>Press any key to complete the experiment. Thank you!</p>`;
+
+      }
+    };
+    timeline.push(debrief_block);
+
+    /* start the experiment */
+    jsPsych.run(timeline);
+
+  </script>
+</html>
