@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>My experiment</title>
+    <title>beexplainable Experiment</title>
     <script src="https://unpkg.com/jspsych@7.3.0"></script>
     <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.1"></script>
     <script src="https://unpkg.com/@jspsych/plugin-image-keyboard-response@1.1.1"></script>
@@ -10,7 +10,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	
 	<style>
-		<!-- .row {
+		.row {
 		  display: flex;
 		  flex-wrap: wrap;
 		  padding: 0 4px;
@@ -22,13 +22,13 @@
 		  padding: 0 4px;
 		}
 
-		.column div img {
+		.column img {
 		  margin-top: 8px;
 		  vertical-align: middle;
 		  min-width:100px;
 		  max-width:300px;
           height:auto;
-		} -->
+		}
 		
 		html {
 		  box-sizing: border-box;
@@ -88,9 +88,7 @@
 
     /* initialize jsPsych */
     var jsPsych = initJsPsych({
-      on_finish: function() {
-        jsPsych.data.displayData();
-      }
+      /*on_finish: function() {jsPsych.data.displayData();}*/
     });
 
     /* create timeline */
@@ -98,80 +96,82 @@
 	const protos = ["img/Andrena_bicolor_proto.jpg", "img/Andrena_flavipes_proto.jpg", "img/Andrena_fulva_proto.jpg",
 					"img/Bombus_hortorum_proto.jpg", "img/Bombus_lucorum_proto.jpg", "img/Bombus_pratorum_proto.jpg"];
 	const test_samples = ["img/Andrena_fulva_test.jpg", "img/Bombus_lucorum_test.jpg"];
-	const exps = ["img/Andrena_fulva_exp.png", "img/Bombus_lucorum_exp.png"];
+	const exps = ["img/Andrena_fulva_exp.PNG", "img/Bombus_lucorum_exp.PNG"];
+	const preds = ["Andrena fulva", "Bombus hortorum"];
 	
 	var proto_grid = `
 		<div class="row">
-		  <div class="column">
-			<div class="card">
-			  <img src="img/Andrena_bicolor_proto.jpg" alt="bico">
-			  <div class="container">
-				<h3>Andrena bicolor</h3>
-				<p><button class="button"><strong>Press 1</strong></button></p>
-			  </div>
+			<div class="column">
+				<div class="card">
+					<img src="img/Andrena_bicolor_proto.jpg" alt="bico">
+					<div class="container">
+						<h3>Andrena bicolor</h3>
+						<p><button class="button"><strong>Press 1</strong></button></p>
+					</div>
+				</div>
 			</div>
-		  </div>
 
-		  <div class="column">
-			<div class="card">
-			  <img src="img/Bombus_hortorum_proto.jpg" alt="hort">
-			  <div class="container">
-				<h3>Bombus hortorum</h3>
-				<p><button class="button"><strong>Press 4</strong></button></p>
-			  </div>
+			<div class="column">
+				<div class="card">
+					<img src="img/Bombus_hortorum_proto.jpg" alt="hort">
+					<div class="container">
+						<h3>Bombus hortorum</h3>
+						<p><button class="button"><strong>Press 4</strong></button></p>
+					</div>
+				</div>
 			</div>
-		  </div>
 		</div>
 		
 		<div class="row">
-		  <div class="column">
-			<div class="card">
-			  <img src="img/Andrena_flavipes_proto.jpg" alt="flavi">
-			  <div class="container">
-				<h3>Andrena flavipes</h3>
-				<p><button class="button"><strong>Press 2</strong></button></p>
-			  </div>
+			<div class="column">
+				<div class="card">
+					<img src="img/Andrena_flavipes_proto.jpg" alt="flavi">
+					<div class="container">
+						<h3>Andrena flavipes</h3>
+						<p><button class="button"><strong>Press 2</strong></button></p>
+					</div>
+				</div>
 			</div>
-		  </div>
 		  
-		  <div class="column">
-			<div class="card">
-			  <img src="img/Bombus_lucorum_proto.jpg" alt="luco">
-			  <div class="container">
-				<h3>Bombus lucorum</h3>
-				<p><button class="button"><strong>Press 5</strong></button></p>
-			  </div>
-			</div>
-		  </div>
-		</div> 
+			<div class="column">
+				<div class="card">
+					<img src="img/Bombus_lucorum_proto.jpg" alt="luco">
+					<div class="container">
+						<h3>Bombus lucorum</h3>
+						<p><button class="button"><strong>Press 5</strong></button></p>
+					</div>
+				</div>
+			</div>	
+		</div>
 		
 		<div class="row">
-		  <div class="column">
-			<div class="card">
-			  <img src="img/Andrena_fulva_proto.jpg" alt="fulva">
-			  <div class="container">
-				<h3>Andrena fulva</h3>
-				<p><button class="button"><strong>Press 3</strong></button></p>
-			  </div>
+			<div class="column">
+				<div class="card">
+					<img src="img/Andrena_fulva_proto.jpg" alt="fulva">
+					<div class="container">
+						<h3>Andrena fulva</h3>
+						<p><button class="button"><strong>Press 3</strong></button></p>
+					</div>
+				</div>
 			</div>
-		  </div>
-
-		  <div class="column">
-			<div class="card">
-			  <img src="img/Bombus_pratorum_proto.jpg" alt="prato">
-			  <div class="container">
-				<h3>Bombus pratorum</h3>
-				<p><button class="button"><strong>Press 6</strong></button></p>
-			  </div>
+			
+			<div class="column">
+				<div class="card">
+					<img src="img/Bombus_pratorum_proto.jpg" alt="prato">
+					<div class="container">
+						<h3>Bombus pratorum</h3>
+						<p><button class="button"><strong>Press 6</strong></button></p>
+					</div>
+				</div>
 			</div>
-		  </div>
-		</div>`;
+		</div>
+		`;
 
 
     /* preload images */
     var preload = {
       type: jsPsychPreload,
-      images: protos
+      images: [protos, test_samples, exps]
     };
     timeline.push(preload);
 
@@ -215,8 +215,13 @@
 	  { stimulus: test_samples[0],  correct_response: '3'},
       { stimulus: test_samples[1],  correct_response: '5'}
     ];
+	
+	var exp_stimuli = [
+	  { stimulus: exps[0],  correct_response: '3'},
+      { stimulus: exps[1],  correct_response: '5'}
+    ];
 
-    /* define fixation and test trials */
+    /* define fixation */
     var fixation = {
       type: jsPsychHtmlKeyboardResponse,
       stimulus: '<div style="font-size:60px;">+</div>',
@@ -229,7 +234,9 @@
       }
     };
 
-    var test = {
+	/*** WITHOUT MODEL ***/
+
+    var test_no_model = {
       type: jsPsychImageKeyboardResponse,
       stimulus: jsPsych.timelineVariable('stimulus'),
       choices: ['1', '2', '3', '4', '5', '6'],
@@ -243,17 +250,15 @@
 	  prompt: `<p>What species do you think the insect above belongs to?</p>` + proto_grid
     };
 
-    /* define test procedure */
-    var test_procedure = {
-      timeline: [fixation, test],
+    var test_procedure_no_model = {
+      timeline: [fixation, test_no_model],
       timeline_variables: test_stimuli,
       repetitions: 1,
       randomize_order: true
     };
-    timeline.push(test_procedure);
+    timeline.push(test_procedure_no_model);
 
-    /* define debrief */
-    var debrief_block = {
+    var debrief_block_no_model = {
       type: jsPsychHtmlKeyboardResponse,
       stimulus: function() {
 
@@ -266,12 +271,104 @@
         return `<p>Num. trials: ${trials.count()}, out of which ${correct_trials.count()} were correct.</p>
 		  <p>You responded correctly on ${accuracy}% of the trials.</p>
           <p>Your average response time was ${rt}ms.</p>
+          <p>Press any key to continue to the next task.</p>`;
+
+      }
+    };
+    timeline.push(debrief_block_no_model);
+	
+	/*** WITH MODEL ***/
+	
+	var test_with_model = {
+      type: jsPsychImageKeyboardResponse,
+      stimulus: jsPsych.timelineVariable('stimulus'),
+      choices: ['1', '2', '3', '4', '5', '6'],
+      data: {
+        task: 'response_model',
+        correct_response: jsPsych.timelineVariable('correct_response')
+      },
+	  on_start: function(data){
+		data.curr_pred = preds[test_samples.indexOf(jsPsych.current_trial.stimulus)];
+		console.log(data.curr_pred);
+      },
+      on_finish: function(data){
+        data.correct = jsPsych.pluginAPI.compareKeys(data.response, data.correct_response);
+      },
+	  prompt: `<p>Our model predicts ${jsPsych.data.get().curr_pred}.</p><p>What species do you think the insect above belongs to?</p>` + proto_grid
+    };
+	
+	var test_procedure_with_model = {
+      timeline: [fixation, test_with_model],
+      timeline_variables: test_stimuli,
+      repetitions: 1,
+      randomize_order: true
+    };
+    timeline.push(test_procedure_with_model);
+	
+	var debrief_block_with_model = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: function() {
+
+        var trials = jsPsych.data.get().filter({task: 'response_model'});
+        var correct_trials = trials.filter({correct: true});
+        var accuracy = Math.round(correct_trials.count() / trials.count() * 100);
+        var rt = Math.round(correct_trials.select('rt').mean());
+
+		/* why does it return a NaN when no trial was correct? */
+        return `<p>Num. trials: ${trials.count()}, out of which ${correct_trials.count()} were correct.</p>
+		  <p>You responded correctly on ${accuracy}% of the trials.</p>
+          <p>Your average response time was ${rt}ms.</p>
+          <p>Press any key to continue to the next task.</p>`;
+
+      }
+    };
+    timeline.push(debrief_block_with_model);
+	
+	
+	/*** WITH EXPLANATIONS ***/
+	
+	var test_with_exp = {
+      type: jsPsychImageKeyboardResponse,
+      stimulus: jsPsych.timelineVariable('stimulus'),
+      choices: ['1', '2', '3', '4', '5', '6'],
+      data: {
+        task: 'response_exp',
+        correct_response: jsPsych.timelineVariable('correct_response')
+      },
+      on_finish: function(data){
+        data.correct = jsPsych.pluginAPI.compareKeys(data.response, data.correct_response);
+      },
+	  prompt: `<p>Our model predicts ${exps[test_samples.indexOf(jsPsych.current_trial.stimulus)]}, because...</p><p>What species do you think the insect above belongs to?</p>` + proto_grid
+    };
+	
+	var test_procedure_with_exp = {
+      timeline: [fixation, test_with_exp],
+      timeline_variables: exp_stimuli,
+      repetitions: 1,
+      randomize_order: true
+    };
+    timeline.push(test_procedure_with_exp);
+	
+	var debrief_block_with_exp = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: function() {
+
+        var trials = jsPsych.data.get().filter({task: 'response_exp'});
+        var correct_trials = trials.filter({correct: true});
+        var accuracy = Math.round(correct_trials.count() / trials.count() * 100);
+        var rt = Math.round(correct_trials.select('rt').mean());
+
+		/* why does it return a NaN when no trial was correct? */
+        return `<p>Num. trials: ${trials.count()}, out of which ${correct_trials.count()} were correct.</p>
+		  <p>You responded correctly on ${accuracy}% of the trials.</p>
+          <p>Your average response time was ${rt}ms.</p>
           <p>Press any key to complete the experiment. Thank you!</p>`;
 
       }
     };
-    timeline.push(debrief_block);
-
+    timeline.push(debrief_block_with_exp);
+	
+	
     /* start the experiment */
     jsPsych.run(timeline);
 
