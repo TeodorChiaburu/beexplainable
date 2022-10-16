@@ -95,8 +95,9 @@
     var timeline = [];
 	const protos = ["img/Andrena_bicolor_proto.jpg", "img/Andrena_flavipes_proto.jpg", "img/Andrena_fulva_proto.jpg",
 					"img/Bombus_hortorum_proto.jpg", "img/Bombus_lucorum_proto.jpg", "img/Bombus_pratorum_proto.jpg"];
-	const test_samples = ["img/Andrena_fulva_test.jpg", "img/Bombus_lucorum_test.jpg"];
-	const exps = ["img/Andrena_fulva_exp.PNG", "img/Bombus_lucorum_exp.PNG"];
+	const test_samples = ["img/nopred_0.jpg", "img/nopred_1.jpg"];
+    const pred_samples = ["img/pred_0.jpg", "img/pred_1.jpg"];
+	const exps = ["img/rise_0.jpg", "img/rise_1.jpg"];
 	const preds = ["Andrena fulva", "Bombus hortorum"];
 	
 	var proto_grid = `
@@ -171,7 +172,7 @@
     /* preload images */
     var preload = {
       type: jsPsychPreload,
-      images: [protos, test_samples, exps]
+      images: [protos, test_samples, pred_samples, exps]
     };
     timeline.push(preload);
 
@@ -212,13 +213,18 @@
 
     /* define trial stimuli array for timeline variables */      /* why doesn't a for loop work here?! */
     var test_stimuli = [
-	  { stimulus: test_samples[0],  correct_response: '3'},
-      { stimulus: test_samples[1],  correct_response: '5'}
+	  { stimulus: test_samples[0],  correct_response: '5'},
+      { stimulus: test_samples[1],  correct_response: '3'}
+    ];
+
+    var pred_stimuli = [
+	  { stimulus: pred_samples[0],  correct_response: '5'},
+      { stimulus: pred_samples[1],  correct_response: '3'}
     ];
 	
 	var exp_stimuli = [
-	  { stimulus: exps[0],  correct_response: '3'},
-      { stimulus: exps[1],  correct_response: '5'}
+	  { stimulus: exps[0],  correct_response: '5'},
+      { stimulus: exps[1],  correct_response: '3'}
     ];
 
     /* define fixation */
@@ -294,12 +300,12 @@
       on_finish: function(data){
         data.correct = jsPsych.pluginAPI.compareKeys(data.response, data.correct_response);
       },
-	  prompt: `<p>Our model predicts ${jsPsych.data.get().curr_pred}.</p><p>What species do you think the insect above belongs to?</p>` + proto_grid
+	  prompt: `<p>What species do you think the insect above belongs to?</p>` + proto_grid
     };
 	
 	var test_procedure_with_model = {
       timeline: [fixation, test_with_model],
-      timeline_variables: test_stimuli,
+      timeline_variables: pred_stimuli,
       repetitions: 1,
       randomize_order: true
     };
@@ -338,7 +344,7 @@
       on_finish: function(data){
         data.correct = jsPsych.pluginAPI.compareKeys(data.response, data.correct_response);
       },
-	  prompt: `<p>Our model predicts ${exps[test_samples.indexOf(jsPsych.current_trial.stimulus)]}, because...</p><p>What species do you think the insect above belongs to?</p>` + proto_grid
+	  prompt: `<p>What species do you think the insect above belongs to?</p>` + proto_grid
     };
 	
 	var test_procedure_with_exp = {
