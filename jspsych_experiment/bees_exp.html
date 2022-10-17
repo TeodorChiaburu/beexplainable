@@ -2,31 +2,47 @@
 <html>
   <head>
     <title>beexplainable Experiment</title>
-    <script src="https://unpkg.com/jspsych@7.3.0"></script>
-    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.1"></script>
-    <script src="https://unpkg.com/@jspsych/plugin-image-keyboard-response@1.1.1"></script>
-    <script src="https://unpkg.com/@jspsych/plugin-preload@1.1.1"></script>
-    <link href="https://unpkg.com/jspsych@7.3.0/css/jspsych.css" rel="stylesheet" type="text/css" />
+    <script src="jspsych/jspsych.js"></script>
+    <script src="jspsych/plugin-html-keyboard-response.js"></script>
+    <script src="jspsych/plugin-image-keyboard-response.js"></script>
+    <script src="jspsych/plugin-preload.js"></script>
+    <link href="jspsych/jspsych.css" rel="stylesheet" type="text/css" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	
 	<style>
+        #div_row {
+          width: 66%;
+          float: right;
+        }
+
 		.row {
 		  display: flex;
 		  flex-wrap: wrap;
 		  padding: 0 4px;
+          width: 90%;
 		}
 
 		/* Create two equal columns that sit next to each other */
 		.column {
 		  flex: 50%;
-		  padding: 0 4px;
+          float: left;
+		  width: 25%;
+		  margin-bottom: 16px;
+		  padding: 0 8px;
 		}
+
+        canvas {
+          float: left;
+          width: 20%;
+          margin-left: 25%;
+        }
 
 		.column img {
 		  margin-top: 8px;
 		  vertical-align: middle;
-		  min-width:100px;
-		  max-width:300px;
+		  /*min-width:100px;*/
+		  /*max-width:300px;*/
+          width: 80%;
           height:auto;
 		}
 		
@@ -38,13 +54,6 @@
 		  box-sizing: inherit;
 		}
 
-		.column {
-		  float: left;
-		  width: 33%;
-		  margin-bottom: 16px;
-		  padding: 0 8px;
-		}
-
 		@media screen and (max-width: 650px) {
 		  .column {
 			width: 100%;
@@ -54,6 +63,7 @@
 
 		.card {
 		  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+          width: 80%;
 		}
 
 		.container {
@@ -101,70 +111,66 @@
 	const preds = ["Andrena fulva", "Bombus hortorum"];
 	
 	var proto_grid = `
-		<div class="row">
-			<div class="column">
-				<div class="card">
-					<img src="img/Andrena_bicolor_proto.jpg" alt="bico">
-					<div class="container">
-						<h3>Andrena bicolor</h3>
-						<p><button class="button"><strong>Press 1</strong></button></p>
-					</div>
-				</div>
-			</div>
+        <div id="div_row">
+            <div class="row">
+                <div class="column">
+                    <div class="card">
+                        <img src="img/Andrena_bicolor_proto.jpg" alt="bico">
+                        <div class="container">
+                            <p><button class="button"><strong>1 Andrena bicolor</strong></button></p>
+                        </div>
+                    </div>
+                </div>
 
-			<div class="column">
-				<div class="card">
-					<img src="img/Bombus_hortorum_proto.jpg" alt="hort">
-					<div class="container">
-						<h3>Bombus hortorum</h3>
-						<p><button class="button"><strong>Press 4</strong></button></p>
-					</div>
-				</div>
-			</div>
-		</div>
-		
-		<div class="row">
-			<div class="column">
-				<div class="card">
-					<img src="img/Andrena_flavipes_proto.jpg" alt="flavi">
-					<div class="container">
-						<h3>Andrena flavipes</h3>
-						<p><button class="button"><strong>Press 2</strong></button></p>
-					</div>
-				</div>
-			</div>
-		  
-			<div class="column">
-				<div class="card">
-					<img src="img/Bombus_lucorum_proto.jpg" alt="luco">
-					<div class="container">
-						<h3>Bombus lucorum</h3>
-						<p><button class="button"><strong>Press 5</strong></button></p>
-					</div>
-				</div>
-			</div>	
-		</div>
-		
-		<div class="row">
-			<div class="column">
-				<div class="card">
-					<img src="img/Andrena_fulva_proto.jpg" alt="fulva">
-					<div class="container">
-						<h3>Andrena fulva</h3>
-						<p><button class="button"><strong>Press 3</strong></button></p>
-					</div>
-				</div>
-			</div>
-			
-			<div class="column">
-				<div class="card">
-					<img src="img/Bombus_pratorum_proto.jpg" alt="prato">
-					<div class="container">
-						<h3>Bombus pratorum</h3>
-						<p><button class="button"><strong>Press 6</strong></button></p>
-					</div>
-				</div>
-			</div>
+                <div class="column">
+                    <div class="card">
+                        <img src="img/Bombus_hortorum_proto.jpg" alt="hort">
+                        <div class="container">
+                            <p><button class="button"><strong>4 Bombus hortorum</strong></button></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="column">
+                    <div class="card">
+                        <img src="img/Andrena_flavipes_proto.jpg" alt="flavi">
+                        <div class="container">
+                            <p><button class="button"><strong>2 Andrena flavipes</strong></button></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="card">
+                        <img src="img/Bombus_lucorum_proto.jpg" alt="luco">
+                        <div class="container">
+                            <p><button class="button"><strong>5 Bombus lucorum</strong></button></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="column">
+                    <div class="card">
+                        <img src="img/Andrena_fulva_proto.jpg" alt="fulva">
+                        <div class="container">
+                            <p><button class="button"><strong>3 Andrena fulva</strong></button></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="card">
+                        <img src="img/Bombus_pratorum_proto.jpg" alt="prato">
+                        <div class="container">
+                            <p><button class="button"><strong>6 Bombus pratorum</strong></button></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 		</div>
 		`;
 
@@ -201,12 +207,13 @@
 	/* show user prototypes for the first time before starting tasks */
     var just_protos = {
       type: jsPsychHtmlKeyboardResponse,
-      stimulus: `	  
-        <p>Before starting the experiment, take your time and look at the 6 samples below.
-		Each of them was chosen as a prototype of their class. Throughout the whole experiment 
-		you will be shown these representative samples next to the test samples to help you 
-		decide which class the test sample belongs to.</p>` + proto_grid + 
-		`<h2>Press any key to begin.</h2>`,
+      stimulus:
+        proto_grid +
+        `<p>Before starting the experiment, take your time and look at the 6 samples on the right.
+		Each of them was chosen as a prototype of their class. Throughout the whole experiment
+		you will be shown these representative samples next to the test samples to help you
+		decide which class the test sample belongs to.</p>
+		<p>When you are ready, press any key to start the tasks.</p>`,
       post_trial_gap: 1000
     };
     timeline.push(just_protos);
@@ -240,7 +247,7 @@
       }
     };
 
-	/*** WITHOUT MODEL ***/
+	/*** WITHOUT MODEL `<div><p id="p_prompt">What species do you think the insect above belongs to?</p></div>` + ***/
 
     var test_no_model = {
       type: jsPsychImageKeyboardResponse,
@@ -253,7 +260,7 @@
       on_finish: function(data){
         data.correct = jsPsych.pluginAPI.compareKeys(data.response, data.correct_response);
       },
-	  prompt: `<p>What species do you think the insect above belongs to?</p>` + proto_grid
+	  prompt: proto_grid
     };
 
     var test_procedure_no_model = {
@@ -293,14 +300,10 @@
         task: 'response_model',
         correct_response: jsPsych.timelineVariable('correct_response')
       },
-	  on_start: function(data){
-		data.curr_pred = preds[test_samples.indexOf(jsPsych.current_trial.stimulus)];
-		console.log(data.curr_pred);
-      },
       on_finish: function(data){
         data.correct = jsPsych.pluginAPI.compareKeys(data.response, data.correct_response);
       },
-	  prompt: `<p>What species do you think the insect above belongs to?</p>` + proto_grid
+	  prompt: proto_grid
     };
 	
 	var test_procedure_with_model = {
@@ -344,7 +347,7 @@
       on_finish: function(data){
         data.correct = jsPsych.pluginAPI.compareKeys(data.response, data.correct_response);
       },
-	  prompt: `<p>What species do you think the insect above belongs to?</p>` + proto_grid
+	  prompt: proto_grid
     };
 	
 	var test_procedure_with_exp = {
