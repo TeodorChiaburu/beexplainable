@@ -84,13 +84,13 @@
 		  color: white;
 		  background-color: #000;
 		  text-align: center;
-		  cursor: pointer;
 		  width: 100%;
+          /*cursor: pointer;*/
 		}
 
-		.button:hover {
-		  background-color: red;
-		}
+		/*.button:hover {*/
+		/*  background-color: red;*/
+		/*}*/
 	</style>
   </head>
   <body></body>
@@ -99,6 +99,7 @@
     /* initialize jsPsych */
     var jsPsych = initJsPsych({
       /*on_finish: function() {jsPsych.data.displayData();}*/
+      show_progress_bar: true
     });
 
     /* create timeline */
@@ -116,8 +117,9 @@
                 <div class="column">
                     <div class="card">
                         <img src="img/Andrena_bicolor_proto.jpg" alt="bico">
+                        <h5>Andrena bicolor</h5>
                         <div class="container">
-                            <p><button class="button"><strong>1 Andrena bicolor</strong></button></p>
+                            <p><button class="button"><strong>Press 1</strong></button></p>
                         </div>
                     </div>
                 </div>
@@ -125,8 +127,9 @@
                 <div class="column">
                     <div class="card">
                         <img src="img/Bombus_hortorum_proto.jpg" alt="hort">
+                        <h5>Bombus hortorum</h5>
                         <div class="container">
-                            <p><button class="button"><strong>4 Bombus hortorum</strong></button></p>
+                            <p><button class="button"><strong>Press 4</strong></button></p>
                         </div>
                     </div>
                 </div>
@@ -136,8 +139,9 @@
                 <div class="column">
                     <div class="card">
                         <img src="img/Andrena_flavipes_proto.jpg" alt="flavi">
+                        <h5>Andrena flavipes</h5>
                         <div class="container">
-                            <p><button class="button"><strong>2 Andrena flavipes</strong></button></p>
+                            <p><button class="button"><strong>Press 2</strong></button></p>
                         </div>
                     </div>
                 </div>
@@ -145,8 +149,9 @@
                 <div class="column">
                     <div class="card">
                         <img src="img/Bombus_lucorum_proto.jpg" alt="luco">
+                        <h5>Bombus lucorum</h5>
                         <div class="container">
-                            <p><button class="button"><strong>5 Bombus lucorum</strong></button></p>
+                            <p><button class="button"><strong>Press 5</strong></button></p>
                         </div>
                     </div>
                 </div>
@@ -156,8 +161,9 @@
                 <div class="column">
                     <div class="card">
                         <img src="img/Andrena_fulva_proto.jpg" alt="fulva">
+                        <h5>Andrena fulva</h5>
                         <div class="container">
-                            <p><button class="button"><strong>3 Andrena fulva</strong></button></p>
+                            <p><button class="button"><strong>Press 3</strong></button></p>
                         </div>
                     </div>
                 </div>
@@ -165,8 +171,9 @@
                 <div class="column">
                     <div class="card">
                         <img src="img/Bombus_pratorum_proto.jpg" alt="prato">
+                        <h5>Bombus pratorum</h5>
                         <div class="container">
-                            <p><button class="button"><strong>6 Bombus pratorum</strong></button></p>
+                            <p><button class="button"><strong>Press 6</strong></button></p>
                         </div>
                     </div>
                 </div>
