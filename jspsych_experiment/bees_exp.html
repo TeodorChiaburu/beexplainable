@@ -5,6 +5,7 @@
     <script src="jspsych/jspsych.js"></script>
     <script src="jspsych/plugin-html-keyboard-response.js"></script>
     <script src="jspsych/plugin-image-keyboard-response.js"></script>
+    <script src="jspsych/plugin-image-button-response.js"></script>
     <script src="jspsych/plugin-preload.js"></script>
     <link href="jspsych/jspsych.css" rel="stylesheet" type="text/css" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,36 +16,35 @@
           float: right;
         }
 
+        #just_protos_prompt_div {
+          width: 33%;
+          float: left;
+        }
+
 		.row {
 		  display: flex;
 		  flex-wrap: wrap;
 		  padding: 0 4px;
-          width: 90%;
 		}
 
-		/* Create two equal columns that sit next to each other */
 		.column {
-		  flex: 50%;
+		  flex: 33%;
           float: left;
 		  width: 25%;
 		  margin-bottom: 16px;
 		  padding: 0 8px;
 		}
 
-        canvas {
-          float: left;
-          width: 20%;
-          margin-left: 25%;
-        }
-
 		.column img {
 		  margin-top: 8px;
 		  vertical-align: middle;
-		  /*min-width:100px;*/
-		  /*max-width:300px;*/
-          width: 80%;
+          width: 90%;
           height:auto;
 		}
+
+        .column h5 {
+            margin-block-start: 0.5em;
+        }
 		
 		html {
 		  box-sizing: border-box;
@@ -63,7 +63,7 @@
 
 		.card {
 		  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-          width: 80%;
+          width: 90%;
 		}
 
 		.container {
@@ -85,12 +85,12 @@
 		  background-color: #000;
 		  text-align: center;
 		  width: 100%;
-          /*cursor: pointer;*/
+          cursor: pointer;
 		}
 
-		/*.button:hover {*/
-		/*  background-color: red;*/
-		/*}*/
+		.button:hover {
+		  background-color: red;
+		}
 	</style>
   </head>
   <body></body>
@@ -109,8 +109,9 @@
 	const test_samples = ["img/nopred_0.jpg", "img/nopred_1.jpg"];
     const pred_samples = ["img/pred_0.jpg", "img/pred_1.jpg"];
 	const exps = ["img/rise_0.jpg", "img/rise_1.jpg"];
-	const preds = ["Andrena fulva", "Bombus hortorum"];
-	
+	const preds = ["Bombus lucorum", "Andrena fulva"];
+    const classes = ["Andrena bicolor", "Andrena flavipes", "Andrena fulva", "Bombus hortorum", "Bombus lucorum", "Bombus pratorum"];
+
 	var proto_grid = `
         <div id="div_row">
             <div class="row">
@@ -118,31 +119,30 @@
                     <div class="card">
                         <img src="img/Andrena_bicolor_proto.jpg" alt="bico">
                         <h5>Andrena bicolor</h5>
-                        <div class="container">
-                            <p><button class="button"><strong>Press 1</strong></button></p>
-                        </div>
                     </div>
                 </div>
 
                 <div class="column">
                     <div class="card">
-                        <img src="img/Bombus_hortorum_proto.jpg" alt="hort">
-                        <h5>Bombus hortorum</h5>
-                        <div class="container">
-                            <p><button class="button"><strong>Press 4</strong></button></p>
-                        </div>
+                        <img src="img/Andrena_flavipes_proto.jpg" alt="flavi">
+                        <h5>Andrena flavipes</h5>
                     </div>
                 </div>
+
+                <div class="column">
+                    <div class="card">
+                        <img src="img/Andrena_fulva_proto.jpg" alt="fulva">
+                        <h5>Andrena fulva</h5>
+                    </div>
+                </div>
+
             </div>
 
             <div class="row">
                 <div class="column">
                     <div class="card">
-                        <img src="img/Andrena_flavipes_proto.jpg" alt="flavi">
-                        <h5>Andrena flavipes</h5>
-                        <div class="container">
-                            <p><button class="button"><strong>Press 2</strong></button></p>
-                        </div>
+                        <img src="img/Bombus_hortorum_proto.jpg" alt="hort">
+                        <h5>Bombus hortorum</h5>
                     </div>
                 </div>
 
@@ -150,21 +150,6 @@
                     <div class="card">
                         <img src="img/Bombus_lucorum_proto.jpg" alt="luco">
                         <h5>Bombus lucorum</h5>
-                        <div class="container">
-                            <p><button class="button"><strong>Press 5</strong></button></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="column">
-                    <div class="card">
-                        <img src="img/Andrena_fulva_proto.jpg" alt="fulva">
-                        <h5>Andrena fulva</h5>
-                        <div class="container">
-                            <p><button class="button"><strong>Press 3</strong></button></p>
-                        </div>
                     </div>
                 </div>
 
@@ -172,9 +157,6 @@
                     <div class="card">
                         <img src="img/Bombus_pratorum_proto.jpg" alt="prato">
                         <h5>Bombus pratorum</h5>
-                        <div class="container">
-                            <p><button class="button"><strong>Press 6</strong></button></p>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -201,12 +183,12 @@
       type: jsPsychHtmlKeyboardResponse,
       stimulus: `	  
         <p>In this experiment, you will be shown images of 6 
-		wild bee species.</p><p><strong>Task1</strong>: assign a class to the 
+		wild bee species and be asked to solve 3 tasks.</p><p><strong>Task 1</strong>: assign a class to the
 		test image based on the prototypes shown on the right half of the page.</p>
-        <p><strong>Task2</strong>: assign a class while also knowing what prediction 
-		our model has made.</p><p><strong>Task3</strong>: assign a class while knowing 
+        <p><strong>Task 2</strong>: assign a class while also knowing what prediction
+		our model has made.</p><p><strong>Task 3</strong>: assign a class while knowing
 		the model prediction and seeing an explanation for it.</p>
-        <p>Press any key to begin.</p>
+        <p>Press any key to continue.</p>
       `
     };
     timeline.push(instructions);
@@ -216,29 +198,32 @@
       type: jsPsychHtmlKeyboardResponse,
       stimulus:
         proto_grid +
-        `<p>Before starting the experiment, take your time and look at the 6 samples on the right.
+        `<div id="just_protos_prompt_div"><p>Before starting the experiment, take your time and look at the 6 samples on the right.
 		Each of them was chosen as a prototype of their class. Throughout the whole experiment
 		you will be shown these representative samples next to the test samples to help you
 		decide which class the test sample belongs to.</p>
-		<p>When you are ready, press any key to start the tasks.</p>`,
+		<p>When you are ready, press any key to start the tasks.</p>
+		<p>You will be led to</p>
+		<p><strong>Task 1: assign a class to the
+		test image based on the prototypes.</strong></p></div>`,
       post_trial_gap: 1000
     };
     timeline.push(just_protos);
 
     /* define trial stimuli array for timeline variables */      /* why doesn't a for loop work here?! */
     var test_stimuli = [
-	  { stimulus: test_samples[0],  correct_response: '5'},
-      { stimulus: test_samples[1],  correct_response: '3'}
+	  { stimulus: test_samples[0],  correct_response: preds[0]},
+      { stimulus: test_samples[1],  correct_response: preds[1]}
     ];
 
     var pred_stimuli = [
-	  { stimulus: pred_samples[0],  correct_response: '5'},
-      { stimulus: pred_samples[1],  correct_response: '3'}
+	  { stimulus: pred_samples[0],  correct_response: preds[0]},
+      { stimulus: pred_samples[1],  correct_response: preds[1]}
     ];
 	
 	var exp_stimuli = [
-	  { stimulus: exps[0],  correct_response: '5'},
-      { stimulus: exps[1],  correct_response: '3'}
+	  { stimulus: exps[0],  correct_response: preds[0]},
+      { stimulus: exps[1],  correct_response: preds[1]}
     ];
 
     /* define fixation */
@@ -254,20 +239,19 @@
       }
     };
 
-	/*** WITHOUT MODEL `<div><p id="p_prompt">What species do you think the insect above belongs to?</p></div>` + ***/
+	/*** WITHOUT MODEL ***/
 
     var test_no_model = {
-      type: jsPsychImageKeyboardResponse,
+      type: jsPsychImageButtonResponse,
       stimulus: jsPsych.timelineVariable('stimulus'),
-      choices: ['1', '2', '3', '4', '5', '6'],
+      choices: classes, /* Also the button labels */
       data: {
         task: 'response',
         correct_response: jsPsych.timelineVariable('correct_response')
       },
       on_finish: function(data){
-        data.correct = jsPsych.pluginAPI.compareKeys(data.response, data.correct_response);
-      },
-	  prompt: proto_grid
+        data.correct = jsPsych.pluginAPI.compareKeys(classes[data.response], data.correct_response); /* Class indices are compared, not labels */
+      }
     };
 
     var test_procedure_no_model = {
@@ -285,14 +269,14 @@
         var trials = jsPsych.data.get().filter({task: 'response'});
         var correct_trials = trials.filter({correct: true});
         var accuracy = Math.round(correct_trials.count() / trials.count() * 100);
-        var rt = Math.round(correct_trials.select('rt').mean());
+        var rt = Math.round(trials.select('rt').mean());
 
 		/* why does it return a NaN when no trial was correct? */
         return `<p>Num. trials: ${trials.count()}, out of which ${correct_trials.count()} were correct.</p>
 		  <p>You responded correctly on ${accuracy}% of the trials.</p>
           <p>Your average response time was ${rt}ms.</p>
-          <p>Press any key to continue to the next task.</p>`;
-
+          <p>Press any key to continue to</p>
+          <p><strong>Task 2: assign a class while also knowing what prediction our model has made.</strong></p>`;
       }
     };
     timeline.push(debrief_block_no_model);
@@ -300,17 +284,16 @@
 	/*** WITH MODEL ***/
 	
 	var test_with_model = {
-      type: jsPsychImageKeyboardResponse,
+      type: jsPsychImageButtonResponse,
       stimulus: jsPsych.timelineVariable('stimulus'),
-      choices: ['1', '2', '3', '4', '5', '6'],
+      choices: classes,
       data: {
         task: 'response_model',
         correct_response: jsPsych.timelineVariable('correct_response')
       },
       on_finish: function(data){
-        data.correct = jsPsych.pluginAPI.compareKeys(data.response, data.correct_response);
-      },
-	  prompt: proto_grid
+        data.correct = jsPsych.pluginAPI.compareKeys(classes[data.response], data.correct_response);
+      }
     };
 	
 	var test_procedure_with_model = {
@@ -328,13 +311,14 @@
         var trials = jsPsych.data.get().filter({task: 'response_model'});
         var correct_trials = trials.filter({correct: true});
         var accuracy = Math.round(correct_trials.count() / trials.count() * 100);
-        var rt = Math.round(correct_trials.select('rt').mean());
+        var rt = Math.round(trials.select('rt').mean());
 
 		/* why does it return a NaN when no trial was correct? */
         return `<p>Num. trials: ${trials.count()}, out of which ${correct_trials.count()} were correct.</p>
 		  <p>You responded correctly on ${accuracy}% of the trials.</p>
           <p>Your average response time was ${rt}ms.</p>
-          <p>Press any key to continue to the next task.</p>`;
+          <p>Press any key to continue to </p>
+          <p><strong>Task 3: assign a class while knowing the model prediction and seeing an explanation for it.</strong></p>`;
 
       }
     };
@@ -344,17 +328,16 @@
 	/*** WITH EXPLANATIONS ***/
 	
 	var test_with_exp = {
-      type: jsPsychImageKeyboardResponse,
+      type: jsPsychImageButtonResponse,
       stimulus: jsPsych.timelineVariable('stimulus'),
-      choices: ['1', '2', '3', '4', '5', '6'],
+      choices: classes,
       data: {
         task: 'response_exp',
         correct_response: jsPsych.timelineVariable('correct_response')
       },
       on_finish: function(data){
-        data.correct = jsPsych.pluginAPI.compareKeys(data.response, data.correct_response);
-      },
-	  prompt: proto_grid
+        data.correct = jsPsych.pluginAPI.compareKeys(classes[data.response], data.correct_response);
+      }
     };
 	
 	var test_procedure_with_exp = {
@@ -372,7 +355,7 @@
         var trials = jsPsych.data.get().filter({task: 'response_exp'});
         var correct_trials = trials.filter({correct: true});
         var accuracy = Math.round(correct_trials.count() / trials.count() * 100);
-        var rt = Math.round(correct_trials.select('rt').mean());
+        var rt = Math.round(trials.select('rt').mean());
 
 		/* why does it return a NaN when no trial was correct? */
         return `<p>Num. trials: ${trials.count()}, out of which ${correct_trials.count()} were correct.</p>

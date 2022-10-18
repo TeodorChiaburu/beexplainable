@@ -1,8 +1,8 @@
-var jsPsychImageKeyboardResponse = (function (jspsych) {
+var jsPsychImageButtonResponse = (function (jspsych) {
   'use strict';
 
   const info = {
-      name: "image-keyboard-response",
+      name: "image-button-response",
       parameters: {
           /** The image to be displayed */
           stimulus: {
@@ -28,13 +28,21 @@ var jsPsychImageKeyboardResponse = (function (jspsych) {
               pretty_name: "Maintain aspect ratio",
               default: true,
           },
-          /** Array containing the key(s) the subject is allowed to press to respond to the stimulus. */
+          /** Array containing the label(s) for the button(s). */
           choices: {
-              type: jspsych.ParameterType.KEYS,
+              type: jspsych.ParameterType.STRING,
               pretty_name: "Choices",
-              default: "ALL_KEYS",
+              default: undefined,
+              array: true,
           },
-          /** Any content here will be displayed below the stimulus. */
+          /** The HTML for creating button. Can create own style. Use the "%choice%" string to indicate where the label from the choices parameter should be inserted. */
+          button_html: {
+              type: jspsych.ParameterType.HTML_STRING,
+              pretty_name: "Button HTML",
+              default: '<button class="jspsych-btn">%choice%</button>',
+              array: true,
+          },
+          /** Any content here will be displayed under the button. */
           prompt: {
               type: jspsych.ParameterType.HTML_STRING,
               pretty_name: "Prompt",
@@ -46,13 +54,25 @@ var jsPsychImageKeyboardResponse = (function (jspsych) {
               pretty_name: "Stimulus duration",
               default: null,
           },
-          /** How long to show trial before it ends */
+          /** How long to show the trial. */
           trial_duration: {
               type: jspsych.ParameterType.INT,
               pretty_name: "Trial duration",
               default: null,
           },
-          /** If true, trial will end when subject makes a response. */
+          /** The vertical margin of the button. */
+          margin_vertical: {
+              type: jspsych.ParameterType.STRING,
+              pretty_name: "Margin vertical",
+              default: "0px",
+          },
+          /** The horizontal margin of the button. */
+          margin_horizontal: {
+              type: jspsych.ParameterType.STRING,
+              pretty_name: "Margin horizontal",
+              default: "8px",
+          },
+          /** If true, then trial will end when user responds. */
           response_ends_trial: {
               type: jspsych.ParameterType.BOOL,
               pretty_name: "Response ends trial",
@@ -70,19 +90,20 @@ var jsPsychImageKeyboardResponse = (function (jspsych) {
       },
   };
   /**
-   * **image-keyboard-response**
+   * **image-button-response**
    *
-   * jsPsych plugin for displaying an image stimulus and getting a keyboard response
+   * jsPsych plugin for displaying an image stimulus and getting a button response
    *
    * @author Josh de Leeuw
-   * @see {@link https://www.jspsych.org/plugins/jspsych-image-keyboard-response/ image-keyboard-response plugin documentation on jspsych.org}
+   * @see {@link https://www.jspsych.org/plugins/jspsych-image-button-response/ image-button-response plugin documentation on jspsych.org}
    */
-  class ImageKeyboardResponsePlugin {
+  class ImageButtonResponsePlugin {
       constructor(jsPsych) {
           this.jsPsych = jsPsych;
       }
       trial(display_element, trial) {
           var height, width;
+          var html;
           if (trial.render_on_canvas) {
               var image_drawn = false;
               // first clear the display element (because the render_on_canvas method appends to display_element instead of overwriting it with .innerHTML)
@@ -96,16 +117,15 @@ var jsPsychImageKeyboardResponse = (function (jspsych) {
               var div_title = document.createElement("div");
               div_title.className = "container";
               div_title.innerHTML += "<h4>What species do you think the insect on the left is?</h4>";
-              //div_title.innerHTML += "<h5>Click on one of the 6 insects on the right.</h5>";
               display_element.insertBefore(div_title, null);
 
               // create canvas element and image
               var canvas = document.createElement("canvas");
-              canvas.id = "jspsych-image-keyboard-response-stimulus";
+              canvas.id = "jspsych-image-button-response-stimulus";
               canvas.classList.add("card");
               canvas.style.margin = "0 50px 0 50px";
               canvas.style.padding = "0";
-              canvas.style.width = "15%";
+              canvas.style.width = "20%";
 
               var ctx = canvas.getContext("2d");
               var img = new Image();
@@ -143,7 +163,52 @@ var jsPsychImageKeyboardResponse = (function (jspsych) {
                   canvas.width = width;
               };
               getHeightWidth(); // call now, in case image loads immediately (is cached)
-              // add canvas and draw image
+              // create buttons
+              var buttons = [];
+              if (Array.isArray(trial.button_html)) {
+                  if (trial.button_html.length == trial.choices.length) {
+                      buttons = trial.button_html;
+                  }
+                  else {
+                      console.error("Error in image-button-response plugin. The length of the button_html array does not equal the length of the choices array");
+                  }
+              }
+              else {
+                  for (var i = 0; i < trial.choices.length; i++) {
+                      buttons.push(trial.button_html);
+                  }
+              }
+              var btngroup_div = document.createElement("div");
+              btngroup_div.id = "div_row";
+              html = '';
+
+              for (var i = 0; i < trial.choices.length; i++) {
+                  var str = buttons[i].replace(/%choice%/g, trial.choices[i]); // the button tag along with the class label
+                  var img_path = "img/" + trial.choices[i].replace(" ", "_") + "_proto.jpg";
+
+                  // only add an extra div of class "row" every three images
+                  if(i%3 == 0) {
+                      html += '<div class="row">';
+                  };
+
+                  html +=
+                      '<div class="column">' +
+                          '<div class="card">' +
+                              '<img src="' + img_path + '">' +
+                              '<div class="container jspsych-image-button-response-button" id="jspsych-image-button-response-button-' + i + '" data-choice="' + i + '">' +
+                                  '<p><button class="button"><strong>' + trial.choices[i] + '</strong></button></p>' +
+                                  //str +
+                              '</div>' +
+                          '</div>' +
+                      '</div>';
+
+                  if(i%3 == 2) { // close 'row' div after every 3 images
+                      html += '</div>';
+                  };
+              }
+              //html += '</div>'; // div_row
+              btngroup_div.innerHTML = html;
+              // add canvas to screen and draw image
               display_element.insertBefore(canvas, null);
               if (img.complete && Number.isFinite(width) && Number.isFinite(height)) {
                   // if image has loaded and width/height have been set, then draw it now
@@ -151,6 +216,8 @@ var jsPsychImageKeyboardResponse = (function (jspsych) {
                   ctx.drawImage(img, 0, 0, width, height);
                   image_drawn = true;
               }
+              // add buttons to screen
+              display_element.insertBefore(btngroup_div, canvas.nextElementSibling);
               // add prompt if there is one
               if (trial.prompt !== null) {
                   display_element.insertAdjacentHTML("beforeend", trial.prompt);
@@ -158,7 +225,39 @@ var jsPsychImageKeyboardResponse = (function (jspsych) {
           }
           else {
               // display stimulus as an image element
-              var html = '<img src="' + trial.stimulus + '" id="jspsych-image-keyboard-response-stimulus">';
+              html = '<img src="' + trial.stimulus + '" id="jspsych-image-button-response-stimulus">';
+              //display buttons
+              var buttons = [];
+              if (Array.isArray(trial.button_html)) {
+                  if (trial.button_html.length == trial.choices.length) {
+                      buttons = trial.button_html;
+                  }
+                  else {
+                      console.error("Error in image-button-response plugin. The length of the button_html array does not equal the length of the choices array");
+                  }
+              }
+              else {
+                  for (var i = 0; i < trial.choices.length; i++) {
+                      buttons.push(trial.button_html);
+                  }
+              }
+              html += '<div id="jspsych-image-button-response-btngroup">';
+              for (var i = 0; i < trial.choices.length; i++) {
+                  var str = buttons[i].replace(/%choice%/g, trial.choices[i]);
+                  html +=
+                      '<div class="jspsych-image-button-response-button" style="display: inline-block; margin:' +
+                          trial.margin_vertical +
+                          " " +
+                          trial.margin_horizontal +
+                          '" id="jspsych-image-button-response-button-' +
+                          i +
+                          '" data-choice="' +
+                          i +
+                          '">' +
+                          str +
+                          "</div>";
+              }
+              html += "</div>";
               // add prompt
               if (trial.prompt !== null) {
                   html += trial.prompt;
@@ -166,7 +265,7 @@ var jsPsychImageKeyboardResponse = (function (jspsych) {
               // update the page content
               display_element.innerHTML = html;
               // set image dimensions after image has loaded (so that we have access to naturalHeight/naturalWidth)
-              var img = display_element.querySelector("#jspsych-image-keyboard-response-stimulus");
+              var img = display_element.querySelector("#jspsych-image-button-response-stimulus");
               if (trial.stimulus_height !== null) {
                   height = trial.stimulus_height;
                   if (trial.stimulus_width == null && trial.maintain_aspect_ratio) {
@@ -190,24 +289,31 @@ var jsPsychImageKeyboardResponse = (function (jspsych) {
               img.style.height = height.toString() + "px";
               img.style.width = width.toString() + "px";
           }
+          // start timing
+          var start_time = performance.now();
+          for (var i = 0; i < trial.choices.length; i++) {
+              display_element
+                  .querySelector("#jspsych-image-button-response-button-" + i)
+                  .addEventListener("click", (e) => {
+                  var btn_el = e.currentTarget;
+                  var choice = btn_el.getAttribute("data-choice"); // don't use dataset for jsdom compatibility
+                  after_response(choice);
+              });
+          }
           // store response
           var response = {
               rt: null,
-              key: null,
+              button: null,
           };
           // function to end trial when it is time
           const end_trial = () => {
               // kill any remaining setTimeout handlers
               this.jsPsych.pluginAPI.clearAllTimeouts();
-              // kill keyboard listeners
-              if (typeof keyboardListener !== "undefined") {
-                  this.jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
-              }
               // gather the data to store for the trial
               var trial_data = {
                   rt: response.rt,
                   stimulus: trial.stimulus,
-                  response: response.key,
+                  response: response.button,
               };
               // clear the display
               display_element.innerHTML = "";
@@ -215,36 +321,33 @@ var jsPsychImageKeyboardResponse = (function (jspsych) {
               this.jsPsych.finishTrial(trial_data);
           };
           // function to handle responses by the subject
-          var after_response = (info) => {
+          function after_response(choice) {
+              // measure rt
+              var end_time = performance.now();
+              var rt = Math.round(end_time - start_time);
+              response.button = parseInt(choice);
+              response.rt = rt;
               // after a valid response, the stimulus will have the CSS class 'responded'
               // which can be used to provide visual feedback that a response was recorded
-              display_element.querySelector("#jspsych-image-keyboard-response-stimulus").className +=
+              display_element.querySelector("#jspsych-image-button-response-stimulus").className +=
                   " responded";
-              // only record the first response
-              if (response.key == null) {
-                  response = info;
+              // disable all the buttons after a response
+              var btns = document.querySelectorAll(".jspsych-image-button-response-button button");
+              for (var i = 0; i < btns.length; i++) {
+                  //btns[i].removeEventListener('click');
+                  btns[i].setAttribute("disabled", "disabled");
               }
               if (trial.response_ends_trial) {
                   end_trial();
               }
-          };
-          // start the response listener
-          if (trial.choices != "NO_KEYS") {
-              var keyboardListener = this.jsPsych.pluginAPI.getKeyboardResponse({
-                  callback_function: after_response,
-                  valid_responses: trial.choices,
-                  rt_method: "performance",
-                  persist: false,
-                  allow_held_key: false,
-              });
           }
-          // hide stimulus if stimulus_duration is set
+          // hide image if timing is set
           if (trial.stimulus_duration !== null) {
               this.jsPsych.pluginAPI.setTimeout(() => {
-                  display_element.querySelector("#jspsych-image-keyboard-response-stimulus").style.visibility = "hidden";
+                  display_element.querySelector("#jspsych-image-button-response-stimulus").style.visibility = "hidden";
               }, trial.stimulus_duration);
           }
-          // end trial if trial_duration is set
+          // end trial if time limit is set
           if (trial.trial_duration !== null) {
               this.jsPsych.pluginAPI.setTimeout(() => {
                   end_trial();
@@ -263,6 +366,16 @@ var jsPsychImageKeyboardResponse = (function (jspsych) {
               this.simulate_visual(trial, simulation_options, load_callback);
           }
       }
+      create_simulation_data(trial, simulation_options) {
+          const default_data = {
+              stimulus: trial.stimulus,
+              rt: this.jsPsych.randomization.sampleExGaussian(500, 50, 1 / 150, true),
+              response: this.jsPsych.randomization.randomInt(0, trial.choices.length - 1),
+          };
+          const data = this.jsPsych.pluginAPI.mergeSimulationData(default_data, simulation_options);
+          this.jsPsych.pluginAPI.ensureSimulationDataConsistency(trial, data);
+          return data;
+      }
       simulate_data_only(trial, simulation_options) {
           const data = this.create_simulation_data(trial, simulation_options);
           this.jsPsych.finishTrial(data);
@@ -273,22 +386,12 @@ var jsPsychImageKeyboardResponse = (function (jspsych) {
           this.trial(display_element, trial);
           load_callback();
           if (data.rt !== null) {
-              this.jsPsych.pluginAPI.pressKey(data.response, data.rt);
+              this.jsPsych.pluginAPI.clickTarget(display_element.querySelector(`div[data-choice="${data.response}"] button`), data.rt);
           }
       }
-      create_simulation_data(trial, simulation_options) {
-          const default_data = {
-              stimulus: trial.stimulus,
-              rt: this.jsPsych.randomization.sampleExGaussian(500, 50, 1 / 150, true),
-              response: this.jsPsych.pluginAPI.getValidKey(trial.choices),
-          };
-          const data = this.jsPsych.pluginAPI.mergeSimulationData(default_data, simulation_options);
-          this.jsPsych.pluginAPI.ensureSimulationDataConsistency(trial, data);
-          return data;
-      }
   }
-  ImageKeyboardResponsePlugin.info = info;
+  ImageButtonResponsePlugin.info = info;
 
-  return ImageKeyboardResponsePlugin;
+  return ImageButtonResponsePlugin;
 
 })(jsPsychModule);
