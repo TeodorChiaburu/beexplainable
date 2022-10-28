@@ -125,7 +125,7 @@ var jsPsychImageButtonResponse = (function (jspsych) {
               canvas.classList.add("card");
               canvas.style.margin = "0 50px 0 50px";
               canvas.style.padding = "0";
-              canvas.style.width = "20%";
+              canvas.style.width = "17%";
 
               var ctx = canvas.getContext("2d");
               var img = new Image();

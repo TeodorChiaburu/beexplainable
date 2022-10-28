@@ -4,10 +4,11 @@
     <title>beexplainable Experiment</title>
     <script src="jspsych/jspsych.js"></script>
     <script src="jspsych/plugin-html-keyboard-response.js"></script>
-    <script src="jspsych/plugin-image-keyboard-response.js"></script>
     <script src="jspsych/plugin-image-button-response.js"></script>
+    <script src="jspsych/plugin-html-button-response.js"></script>
     <script src="jspsych/plugin-preload.js"></script>
     <link href="jspsych/jspsych.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" href="img/bht_logo.jpg">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	
 	<style>
@@ -96,13 +97,12 @@
   <body></body>
   <script>
 
-    /* initialize jsPsych */
+    // Initialize jsPsych
     var jsPsych = initJsPsych({
-      /*on_finish: function() {jsPsych.data.displayData();}*/
       show_progress_bar: true
     });
 
-    /* create timeline */
+    // Create timeline
     var timeline = [];
 	const protos = ["img/Andrena_bicolor_proto.jpg", "img/Andrena_flavipes_proto.jpg", "img/Andrena_fulva_proto.jpg",
 					"img/Bombus_hortorum_proto.jpg", "img/Bombus_lucorum_proto.jpg", "img/Bombus_pratorum_proto.jpg"];
@@ -112,6 +112,7 @@
 	const preds = ["Bombus lucorum", "Andrena fulva"];
     const classes = ["Andrena bicolor", "Andrena flavipes", "Andrena fulva", "Bombus hortorum", "Bombus lucorum", "Bombus pratorum"];
 
+    // Grid with protos (just labels beneath, no buttons)
 	var proto_grid = `
         <div id="div_row">
             <div class="row">
@@ -164,53 +165,55 @@
 		`;
 
 
-    /* preload images */
+    // Preload images
     var preload = {
       type: jsPsychPreload,
       images: [protos, test_samples, pred_samples, exps]
     };
     timeline.push(preload);
 
-    /* define welcome message trial */
+    // Define welcome message trial
     var welcome = {
-      type: jsPsychHtmlKeyboardResponse,
-      stimulus: "Welcome to the experiment. Press any key to begin."
+      type: jsPsychHtmlButtonResponse,
+      stimulus: "<strong>Welcome to the experiment!</strong>",
+      choices: ['Continue']
     };
     timeline.push(welcome);
 
-    /* define instructions trial */
+    // Define instructions trial
     var instructions = {
-      type: jsPsychHtmlKeyboardResponse,
+      type: jsPsychHtmlButtonResponse,
       stimulus: `	  
         <p>In this experiment, you will be shown images of 6 
-		wild bee species and be asked to solve 3 tasks.</p><p><strong>Task 1</strong>: assign a class to the
+		wild bee species and be asked to solve 3 tasks.</p><p><strong>Task 1</strong>: Assign a class to the
 		test image based on the prototypes shown on the right half of the page.</p>
-        <p><strong>Task 2</strong>: assign a class while also knowing what prediction
-		our model has made.</p><p><strong>Task 3</strong>: assign a class while knowing
+        <p><strong>Task 2</strong>: Assign a class while also knowing what prediction
+		our model has made.</p><p><strong>Task 3</strong>: Assign a class while knowing
 		the model prediction and seeing an explanation for it.</p>
-        <p>Press any key to continue.</p>
-      `
+      `,
+      choices: ['Continue']
     };
     timeline.push(instructions);
 	
-	/* show user prototypes for the first time before starting tasks */
+	// Show user prototypes for the first time before starting tasks
     var just_protos = {
-      type: jsPsychHtmlKeyboardResponse,
+      type: jsPsychHtmlButtonResponse,
       stimulus:
         proto_grid +
         `<div id="just_protos_prompt_div"><p>Before starting the experiment, take your time and look at the 6 samples on the right.
 		Each of them was chosen as a prototype of their class. Throughout the whole experiment
 		you will be shown these representative samples next to the test samples to help you
 		decide which class the test sample belongs to.</p>
-		<p>When you are ready, press any key to start the tasks.</p>
-		<p>You will be led to</p>
-		<p><strong>Task 1: assign a class to the
+		<p>Whenever you are ready, click <strong>Continue</strong> to start the first task:</p>
+		<p><strong>Task 1: Assign a class to the
 		test image based on the prototypes.</strong></p></div>`,
+      choices: ['Continue'],
       post_trial_gap: 1000
     };
     timeline.push(just_protos);
 
-    /* define trial stimuli array for timeline variables */      /* why doesn't a for loop work here?! */
+    // TODO: why doesn't a for loop work here?!
+    // Define trial stimuli array for timeline variables
     var test_stimuli = [
 	  { stimulus: test_samples[0],  correct_response: preds[0]},
       { stimulus: test_samples[1],  correct_response: preds[1]}
@@ -226,13 +229,13 @@
       { stimulus: exps[1],  correct_response: preds[1]}
     ];
 
-    /* define fixation */
+    // Define fixation
     var fixation = {
       type: jsPsychHtmlKeyboardResponse,
       stimulus: '<div style="font-size:60px;">+</div>',
       choices: "NO_KEYS",
       trial_duration: function(){
-        return jsPsych.randomization.sampleWithoutReplacement([250, 500, 750], 1)[0]; /* how long to wait till next test sample is shown */
+        return jsPsych.randomization.sampleWithoutReplacement([250, 500, 750], 1)[0]; // = how long to wait till next test sample is shown
       },
       data: {
         task: 'fixation'
@@ -244,13 +247,14 @@
     var test_no_model = {
       type: jsPsychImageButtonResponse,
       stimulus: jsPsych.timelineVariable('stimulus'),
-      choices: classes, /* Also the button labels */
+      choices: classes, // Also the button labels
       data: {
         task: 'response',
         correct_response: jsPsych.timelineVariable('correct_response')
       },
       on_finish: function(data){
-        data.correct = jsPsych.pluginAPI.compareKeys(classes[data.response], data.correct_response); /* Class indices are compared, not labels */
+        // Note: Class indices are compared, not labels
+        data.correct = jsPsych.pluginAPI.compareKeys(classes[data.response], data.correct_response);
       }
     };
 
@@ -263,7 +267,7 @@
     timeline.push(test_procedure_no_model);
 
     var debrief_block_no_model = {
-      type: jsPsychHtmlKeyboardResponse,
+      type: jsPsychHtmlButtonResponse,
       stimulus: function() {
 
         var trials = jsPsych.data.get().filter({task: 'response'});
@@ -271,13 +275,13 @@
         var accuracy = Math.round(correct_trials.count() / trials.count() * 100);
         var rt = Math.round(trials.select('rt').mean());
 
-		/* why does it return a NaN when no trial was correct? */
         return `<p>Num. trials: ${trials.count()}, out of which ${correct_trials.count()} were correct.</p>
 		  <p>You responded correctly on ${accuracy}% of the trials.</p>
           <p>Your average response time was ${rt}ms.</p>
-          <p>Press any key to continue to</p>
-          <p><strong>Task 2: assign a class while also knowing what prediction our model has made.</strong></p>`;
-      }
+          <p>Click <strong>Continue</strong> to start the next task:</p>
+          <p><strong>Task 2: Assign a class while also knowing what prediction our model has made.</strong></p>`;
+      },
+      choices: ['Continue']
     };
     timeline.push(debrief_block_no_model);
 	
@@ -305,7 +309,7 @@
     timeline.push(test_procedure_with_model);
 	
 	var debrief_block_with_model = {
-      type: jsPsychHtmlKeyboardResponse,
+      type: jsPsychHtmlButtonResponse,
       stimulus: function() {
 
         var trials = jsPsych.data.get().filter({task: 'response_model'});
@@ -313,14 +317,13 @@
         var accuracy = Math.round(correct_trials.count() / trials.count() * 100);
         var rt = Math.round(trials.select('rt').mean());
 
-		/* why does it return a NaN when no trial was correct? */
         return `<p>Num. trials: ${trials.count()}, out of which ${correct_trials.count()} were correct.</p>
 		  <p>You responded correctly on ${accuracy}% of the trials.</p>
           <p>Your average response time was ${rt}ms.</p>
-          <p>Press any key to continue to </p>
-          <p><strong>Task 3: assign a class while knowing the model prediction and seeing an explanation for it.</strong></p>`;
-
-      }
+          <p>Click <strong>Continue</strong> to start the next task:</p>
+          <p><strong>Task 3: Assign a class while knowing the model prediction and seeing an explanation for it.</strong></p>`;
+      },
+      choices: ['Continue']
     };
     timeline.push(debrief_block_with_model);
 	
@@ -349,7 +352,7 @@
     timeline.push(test_procedure_with_exp);
 	
 	var debrief_block_with_exp = {
-      type: jsPsychHtmlKeyboardResponse,
+      type: jsPsychHtmlButtonResponse,
       stimulus: function() {
 
         var trials = jsPsych.data.get().filter({task: 'response_exp'});
@@ -357,18 +360,16 @@
         var accuracy = Math.round(correct_trials.count() / trials.count() * 100);
         var rt = Math.round(trials.select('rt').mean());
 
-		/* why does it return a NaN when no trial was correct? */
         return `<p>Num. trials: ${trials.count()}, out of which ${correct_trials.count()} were correct.</p>
 		  <p>You responded correctly on ${accuracy}% of the trials.</p>
           <p>Your average response time was ${rt}ms.</p>
-          <p>Press any key to complete the experiment. Thank you!</p>`;
-
-      }
+          <p>Click <strong>Finish</strong> to close the experiment. Thank you!</p>`;
+      },
+      choices: ['Finish']
     };
     timeline.push(debrief_block_with_exp);
-	
-	
-    /* start the experiment */
+
+    // Start the experiment
     jsPsych.run(timeline);
 
   </script>
