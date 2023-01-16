@@ -9,26 +9,36 @@ import glob
 from beexplainable.utils import metafile_readers as mr
 
 # Metafile folder
-bees_folder = "../metafiles/Bees/masked/"
+bees_folder = "../metafiles/Bees/raw/"
 
 # Should the 4 similar Bombus species be compressed into one single species?
 compress_B_lucorum = True
-bees_subfolder = '22_species/' if compress_B_lucorum else '25_species/'
+#bees_subfolder = '22_species/' if compress_B_lucorum else '25_species/'
+bees_subfolder = '6_species/'
+
+# Define the 6 species to consider for the jspsych experiment
+js_species = ['Andrena_bicolor', 'Andrena_flavipes', 'Andrena_fulva',
+              'Bombus_cryptarum', 'Bombus_magnus', 'Bombus_terrestris', 'Bombus_hortorum', 'Bombus_lucorum', 'Bombus_pratorum']
 
 # Read class names
 CLASSES_PATH = bees_folder + bees_subfolder + "classes.txt"
 cls_dict = mr.metafile_to_dict(CLASSES_PATH)
 
-images = open(bees_folder + "images.txt", "a")
+images = open(bees_folder + "images_6.txt", "a")
 image_class_labels = open(bees_folder + bees_subfolder + "image_class_labels.txt", "a")
 
-BEES_PATH = '../../../data/data_lstudio/Bees_masked/'
+BEES_PATH = '../../../data/Wildbienen/Bees/'
 if 'Christian' in bees_folder:
     # Use the already extracted file names in images.txt, otherwise glob.glob will reorder the names
     IMAGES_PATH = '../metafiles/Bees_Christian/images.txt'
     img_paths = list( mr.metafile_to_dict(IMAGES_PATH).values() )
 else: # for full dataset (raw or masked)
-    img_paths = glob.glob(BEES_PATH + '**/*.jpg')  # double ** for recursive search (over 30k imgs)
+    #img_paths = glob.glob(BEES_PATH + '**/*.jpg')  # double ** for recursive search (over 30k imgs)
+    all_folders = glob.glob(BEES_PATH + '*')
+    js_folders  = [f for f in all_folders for s in js_species if s in f]
+    img_paths   = []
+    for jf in js_folders:
+        img_paths += glob.glob(jf + '/*.jpg')
 
 for i in range(len(img_paths)):
 
