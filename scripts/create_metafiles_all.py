@@ -9,7 +9,7 @@ import glob
 from beexplainable.utils import metafile_readers as mr
 
 # Metafile folder
-bees_folder = "../metafiles/Bees/raw/"
+bees_folder = "../metafiles/Bees_Christian/" #"../metafiles/Bees/raw/"
 
 # Should the 4 similar Bombus species be compressed into one single species?
 compress_B_lucorum = True
@@ -27,31 +27,35 @@ cls_dict = mr.metafile_to_dict(CLASSES_PATH)
 images = open(bees_folder + "images_6.txt", "a")
 image_class_labels = open(bees_folder + bees_subfolder + "image_class_labels.txt", "a")
 
-BEES_PATH = '../../../data/Wildbienen/Bees/'
-if 'Christian' in bees_folder:
-    # Use the already extracted file names in images.txt, otherwise glob.glob will reorder the names
-    IMAGES_PATH = '../metafiles/Bees_Christian/images.txt'
-    img_paths = list( mr.metafile_to_dict(IMAGES_PATH).values() )
-else: # for full dataset (raw or masked)
-    #img_paths = glob.glob(BEES_PATH + '**/*.jpg')  # double ** for recursive search (over 30k imgs)
-    all_folders = glob.glob(BEES_PATH + '*')
-    js_folders  = [f for f in all_folders for s in js_species if s in f]
-    img_paths   = []
-    for jf in js_folders:
+# Get all paths to the bees, then only keep those relevant for experiment
+BEES_PATH = '../../../data/data_lstudio/Bees_Christian/' #'../../../data/Wildbienen/Bees/'
+all_paths = glob.glob(BEES_PATH + '*')
+js_paths  = [f for f in all_paths for s in js_species if s in f]
+
+# The full dataset is grouped in species subfolders, Christian's is not
+if 'Christian' not in bees_folder:
+    img_paths = []
+    for jf in js_paths:
         img_paths += glob.glob(jf + '/*.jpg')
+else:
+    img_paths = js_paths
 
 for i in range(len(img_paths)):
 
-    # Get file name (not the whole path) and add it to the dictionary of images
-    file_name = img_paths[i]
-    file_name = file_name[file_name.rfind('/') + 1:]
+    # Get file name and iscard the common main path
+    # Note: for Bees_Christian you are left with file_name.jpg
+    #       for Bees you are left with species_folder/file_name.jpg
+    file_name = img_paths[i][len(BEES_PATH):]
 
     # Infer class from file name
     substrs = file_name.split('_')
-    cls = substrs[0] + '_' + substrs[1]
+    # Bees_Christian: ['Andrena', 'bicolor', '73727857', '1.jpg']
+    # Bees: ['Andrena', 'bicolor/Andrena', 'bicolor', '73727857', '1.jpg']
+    cls = substrs[0] + '_' + substrs[1] if 'Christian' in bees_folder \
+            else substrs[0] + '_' + substrs[2]
 
     # Images are stored in extra species subfolders
-    images.write(str(i + 1) + ' ' + cls + '/' + file_name + '\n')
+    images.write(str(i + 1) + ' ' + file_name + '\n')
 
     # Compress Bombus lucorum if needed
     if compress_B_lucorum:
