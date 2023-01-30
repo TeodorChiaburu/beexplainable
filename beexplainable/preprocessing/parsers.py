@@ -1,7 +1,6 @@
 """Library for parsing image inputs before feeding them into the model."""
 
 import tensorflow as tf
-from tensorflow.keras.layers.experimental.preprocessing import Rescaling
 from typing import List
 
 def parse_image(file_id: str, img_lookup, img_w: int, img_h: int, root: str = './'):

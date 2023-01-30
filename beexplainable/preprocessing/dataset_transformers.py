@@ -1,10 +1,11 @@
 """Library for applying different transformations on original dataset: bbox_cropping, masking etc."""
 
 import numpy as np
+import tensorflow as tf
 import matplotlib.pyplot as plt
 import cv2 as cv
 from typing import Dict, Tuple
-from beexplainable.utils import annot_computers as ac
+from ..utils import annot_computers as ac
 
 
 def crop_images_to_bbox(img_dict: Dict[str, str], bbox_dict: Dict[str, Tuple[float]], src: str, target: str = None):
@@ -161,3 +162,24 @@ def mask_whole_object(img_dict: Dict[str, str], contours: np.ndarray, w_h_dict: 
             if bbox_dict is not None:
                 overlay = overlay[ymin: ymin + h, xmin: xmin + w]
             plt.imsave(target_overlay + filename, overlay)
+
+
+@tf.function
+def augment_dataset(dataset):
+    """Augments the given dataset via classical transformations (flips, rotation, contrast and brightness change).
+
+    :param dataset: Dataset to augment
+    :type dataset: tf.Dataset
+    :return: Augmented dataset
+    """
+
+    aug_train_flip_1 = dataset.map(lambda x, y: (tf.image.flip_left_right(x), y))
+    aug_train_flip_2 = dataset.map(lambda x, y: (tf.image.flip_up_down(x), y))
+    aug_train_rot = dataset.map(lambda x, y: (tf.image.rot90(x), y))
+    aug_train_cont = dataset.map(lambda x, y: (tf.image.random_contrast(x, 0.2, 0.5), y))
+    aug_train_brt = dataset.map(lambda x, y: (tf.image.random_brightness(x, 0.5), y))
+
+    dataset = dataset.concatenate(aug_train_flip_1).concatenate(aug_train_flip_2).concatenate(aug_train_rot)
+    dataset = dataset.concatenate(aug_train_cont).concatenate(aug_train_brt)
+
+    return dataset

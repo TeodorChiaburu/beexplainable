@@ -9,7 +9,7 @@ import glob
 from beexplainable.utils import metafile_readers as mr
 
 # Metafile folder
-bees_folder = "../metafiles/Bees_Christian/" #"../metafiles/Bees/raw/"
+bees_folder = "../metafiles/Bees/masked/" #"../metafiles/Bees/raw/"
 
 # Should the 4 similar Bombus species be compressed into one single species?
 compress_B_lucorum = True
@@ -28,7 +28,7 @@ images = open(bees_folder + "images_6.txt", "a")
 image_class_labels = open(bees_folder + bees_subfolder + "image_class_labels.txt", "a")
 
 # Get all paths to the bees, then only keep those relevant for experiment
-BEES_PATH = '../../../data/data_lstudio/Bees_Christian/' #'../../../data/Wildbienen/Bees/'
+BEES_PATH = '../../../data/Wildbienen/Bees_masked/' #'../../../data/Wildbienen/Bees/' or '../../../data/data_lstudio/Bees_Christian/'
 all_paths = glob.glob(BEES_PATH + '*')
 js_paths  = [f for f in all_paths for s in js_species if s in f]
 

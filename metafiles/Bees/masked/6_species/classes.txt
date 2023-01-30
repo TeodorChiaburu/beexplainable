@@ -1,0 +1,6 @@
+1 Andrena_bicolor
+2 Andrena_flavipes
+3 Andrena_fulva
+4 Bombus_hortorum
+5 Bombus_lucorum
+6 Bombus_pratorum
