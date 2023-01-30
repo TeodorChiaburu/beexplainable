@@ -1,11 +1,7 @@
 """Library for deriving extra annotations from those imported from Label Studio"""
 
 import sys
-# Insert libraries paths from 1 on; 0 is the script path
-sys.path.insert(1, '../../label_studio_converter') # for scripts
-sys.path.insert(2, './beexplainable/label_studio_converter') # for notebooks
-sys.path.insert(3, '..\\..\\label_studio_converter')
-sys.path.insert(4, '.\\beexplainable\\label_studio_converter')
+sys.path.insert(1, '/mnt/KInsektDaten/teo/label_studio_converter')
 
 import numpy as np
 import itertools
@@ -13,6 +9,7 @@ from typing import Tuple, List, Dict
 from skimage.measure import regionprops
 from scipy.ndimage.morphology import binary_closing
 from label_studio_converter.brush import decode_rle # comment out before sphinx make html
+
 
 def rle_to_matrix(rle_arr: np.ndarray, dims: Tuple[int, int]) -> np.ndarray:
     """Converts an array of RLE strings into a 2d matrix of 1s and 0s defining \
