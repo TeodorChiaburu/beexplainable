@@ -8,19 +8,19 @@ import glob
 from beexplainable.utils import metafile_readers as mr
 
 # Metafile folder
-bees_folder = "../metafiles/KInsecta/"
-#subfolder   = "full_images_ilona/"
-subfolder   = "ilona_squared/"
+bees_folder  = "../metafiles/KInsecta/"
+subfolder    = "split_square_patches_labelstudio/"
+split_folder = "test"
 
 # Read class names
 CLASSES_PATH = bees_folder + subfolder + "classes.txt"
 cls_dict = mr.metafile_to_dict(CLASSES_PATH)
 
-images = open(bees_folder + subfolder + "images_validation.txt", "a")
-image_class_labels = open(bees_folder + subfolder + "image_class_labels_validation.txt", "a")
+images = open(bees_folder + subfolder + "images_" + split_folder + ".txt", "a")
+image_class_labels = open(bees_folder + subfolder + "image_class_labels_" + split_folder + ".txt", "a")
 
 # Get all paths to the bees
-BEES_PATH = '../../../data/KInsecta_webapp_data_2022_09_02/' + subfolder + 'validation/'
+BEES_PATH = '../../../data/KInsecta_webapp_data_2022_09_02/concept_data_preprocessing/' + subfolder + split_folder + '/'
 img_paths = glob.glob(BEES_PATH + '*/*.png')
 
 for i in range(len(img_paths)):
