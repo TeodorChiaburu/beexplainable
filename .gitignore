@@ -1,6 +1,9 @@
 .idea/
+*.pyc
 
 models/
 docs/build/html/
 jspsych_experiment/jspsych/
 !jspsych_experiment/jspsych/plugin-image-keyboard-response.js
+!jspsych_experiment/jspsych/plugin-image-button-response.js
+!jspsych_experiment/jspsych/jspsych.css
