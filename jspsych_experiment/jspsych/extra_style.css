@@ -30,7 +30,7 @@
 }
 
 .column h5 {
-	margin-block-start: 0.5em;
+  margin-block-start: 0.5em;
 }
 
 html {
@@ -77,4 +77,22 @@ html {
 
 .button:hover {
   background-color: red;
+}
+
+/* For zoom-in */
+.img-zoom-container {
+  position: relative;
+}
+
+.img-zoom-lens {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  /*set the size of the lens:*/
+  width: 40px;
+  height: 40px;
+}
+
+.img-zoom-result {
+  border: 1px solid #d4d4d4;
+  aspect-ratio : 1 / 1;
 }
