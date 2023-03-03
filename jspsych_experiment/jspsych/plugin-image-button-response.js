@@ -89,6 +89,7 @@ var jsPsychImageButtonResponse = (function (jspsych) {
           },
       },
   };
+
   /**
    * **image-button-response**
    *
@@ -101,6 +102,7 @@ var jsPsychImageButtonResponse = (function (jspsych) {
       constructor(jsPsych) {
           this.jsPsych = jsPsych;
       }
+
       trial(display_element, trial) {
           var height, width;
           var html;
@@ -117,15 +119,21 @@ var jsPsychImageButtonResponse = (function (jspsych) {
               var div_title = document.createElement("div");
               div_title.className = "container";
               div_title.innerHTML += "<h4>What species do you think the insect on the left is?</h4>";
+              div_title.innerHTML += "<h5>(hover over the image to zoom in)</h5>";
               display_element.insertBefore(div_title, null);
+
+              // create div for canvas-image and zoom-pane
+              var div_canvas_zoom = document.createElement("div");
+              div_canvas_zoom.className = "img-zoom-container column";
+              div_canvas_zoom.style.margin = "0 50px 0 50px";
+              div_canvas_zoom.style.padding = "0";
+              div_canvas_zoom.style.width = "17%";
 
               // create canvas element and image
               var canvas = document.createElement("canvas");
               canvas.id = "jspsych-image-button-response-stimulus";
               canvas.classList.add("card");
-              canvas.style.margin = "0 50px 0 50px";
-              canvas.style.padding = "0";
-              canvas.style.width = "17%";
+              canvas.style.aspectRatio = "1 / 1";
 
               var ctx = canvas.getContext("2d");
               var img = new Image();
@@ -163,6 +171,7 @@ var jsPsychImageButtonResponse = (function (jspsych) {
                   canvas.width = width;
               };
               getHeightWidth(); // call now, in case image loads immediately (is cached)
+
               // create buttons
               var buttons = [];
               if (Array.isArray(trial.button_html)) {
@@ -208,16 +217,105 @@ var jsPsychImageButtonResponse = (function (jspsych) {
               }
               //html += '</div>'; // div_row
               btngroup_div.innerHTML = html;
-              // add canvas to screen and draw image
-              display_element.insertBefore(canvas, null);
+
               if (img.complete && Number.isFinite(width) && Number.isFinite(height)) {
                   // if image has loaded and width/height have been set, then draw it now
                   // (don't rely on img onload function to draw image when image is in the cache, because that causes a delay in the image presentation)
                   ctx.drawImage(img, 0, 0, width, height);
                   image_drawn = true;
               }
+
+              // create pane for zoom-in
+              var zoom_div = document.createElement("div");
+              zoom_div.className = "img-zoom-result";
+              zoom_div.id = "zoom_result";
+              zoom_div.classList.add("card");
+              zoom_div.style.margin = "auto";
+
+              // add canvas-image and zoom-pane to the same div with position=relative (necessary for the zoom function)
+              div_canvas_zoom.appendChild(canvas);
+              div_canvas_zoom.appendChild(zoom_div);
+              display_element.insertBefore(div_canvas_zoom, null);
+
+              // Zoom in on images
+              function imageZoom(imgID, resultID) {
+                var img, lens, result, zoom_scale;
+                const IMG_SCREEN = 0.14516; // hack for getting true width of the displayed image: img_width / window_width is const.
+                var img_width = window.innerWidth * IMG_SCREEN;
+                // Note: since image pane and resulting zooming pane are quadratic
+                //       then img_width = img_height = result_width = result_height
+                //       Also the lens is quadratic, so lens_width = lens_height
+
+                img = document.getElementById(imgID);
+                result = document.getElementById(resultID);
+
+                /*create lens in sized down displayed image*/
+                lens = document.createElement("div");
+                lens.setAttribute("class", "img-zoom-lens");
+                img.parentElement.insertBefore(lens, img);
+
+                /*calculate the ratio between result div and lens:*/
+                zoom_scale = img_width / lens.offsetWidth;
+
+                /*set background properties for the result div:*/
+                result.style.backgroundImage = "url('" + trial.stimulus + "')";
+                result.style.backgroundSize = (img_width * zoom_scale) + "px " + (img_width * zoom_scale) + "px";
+
+                /*execute a function when someone moves the cursor over the image, or the lens:*/
+                lens.addEventListener("mousemove", moveLens);
+                img.addEventListener("mousemove", moveLens);
+                /*and also for touch screens:*/
+                lens.addEventListener("touchmove", moveLens);
+                img.addEventListener("touchmove", moveLens);
+
+                function moveLens(e) {
+                    var pos, x, y;
+                    /*prevent any other actions that may occur when moving over the image:*/
+                    e.preventDefault();
+                    /*get the cursor's x and y positions:*/
+                    pos = getCursorPos(e);
+                    /*calculate the position of the lens in displayed image*/
+                    x = pos.x - (lens.offsetWidth / 2) + img.offsetLeft;
+                    y = pos.y - (lens.offsetHeight / 2);
+                    /*prevent the lens from being positioned outside the image:*/
+                    if (x > img_width + img.offsetLeft - lens.offsetWidth) {
+                        x = img_width + img.offsetLeft - lens.offsetWidth;
+                    }
+                    if (x < img.offsetLeft) {
+                        x = img.offsetLeft;
+                    }
+                    if (y > img_width - lens.offsetHeight) {
+                        y = img_width - lens.offsetHeight;
+                    }
+                    if (y < 0) {
+                        y = 0;
+                    }
+                    /*set the position of the lens:*/
+                    lens.style.left = x + "px";
+                    lens.style.top = y + "px";
+                    /*display what the lens "sees":*/
+                    result.style.backgroundPosition = "-" + ((x - img.offsetLeft) * zoom_scale - img.offsetLeft) + "px -" + (y * zoom_scale) + "px";
+                }
+
+                function getCursorPos(e) {
+                    var a, x = 0, y = 0;
+                    e = e || window.Event;
+                    /*get the x and y positions of the image:*/
+                    a = img.getBoundingClientRect();
+                    /*calculate the cursor's x and y coordinates, relative to the image:*/
+                    x = e.pageX - a.left;
+                    y = e.pageY - a.top;
+                    /*consider any page scrolling:*/
+                    x = x - window.scrollX;
+                    y = y - window.scrollY;
+                    return {x : x, y : y};
+                }
+              };
+              // Initiate zoom effect
+              imageZoom("jspsych-image-button-response-stimulus", "zoom_result");
+
               // add buttons to screen
-              display_element.insertBefore(btngroup_div, canvas.nextElementSibling);
+              display_element.insertBefore(btngroup_div, div_canvas_zoom.nextElementSibling);
               // add prompt if there is one
               if (trial.prompt !== null) {
                   display_element.insertAdjacentHTML("beforeend", trial.prompt);
