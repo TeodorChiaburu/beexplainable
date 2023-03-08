@@ -3,6 +3,11 @@
   float: right;
 }
 
+#div_venn img {
+  width: 50%;
+  margin: auto;
+}
+
 #just_protos_prompt_div {
   width: 33%;
   float: left;
@@ -18,7 +23,7 @@
   flex: 33%;
   float: left;
   width: 25%;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   padding: 0 8px;
 }
 
@@ -57,6 +62,15 @@ html {
   padding: 0 16px;
 }
 
+.container h5 {
+  margin: 0;
+  color: red;
+}
+
+#div_title {
+  margin-bottom: 50px;
+}
+
 .container::after, .row::after {
   content: "";
   clear: both;
@@ -87,9 +101,22 @@ html {
 .img-zoom-lens {
   position: absolute;
   border: 1px solid #d4d4d4;
-  /*set the size of the lens:*/
-  width: 40px;
-  height: 40px;
+  width: 120px;
+  height: 120px;
+  /*top: 20%;
+  left: 40%;*/
+}
+@media screen and (max-width: 1650px) {
+  .img-zoom-lens {
+    width: 80px;
+    height: 80px;
+  }
+}
+@media screen and (max-width: 650px) {
+  .img-zoom-lens {
+    width: 40px;
+    height: 40px;
+  }
 }
 
 .img-zoom-result {

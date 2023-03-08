@@ -118,8 +118,16 @@ var jsPsychImageButtonResponse = (function (jspsych) {
               // create title div with the prompt question
               var div_title = document.createElement("div");
               div_title.className = "container";
-              div_title.innerHTML += "<h4>What species do you think the insect on the left is?</h4>";
-              div_title.innerHTML += "<h5>(hover over the image to zoom in)</h5>";
+              div_title.id = "div_title";
+              div_title.innerHTML += "<h4>What species do you think the insect on the left is? Hover to zoom in.</h4>";
+              if (typeof trial.data.pred_class !== 'undefined' && typeof trial.data.pred_concept === 'undefined') {
+                  div_title.innerHTML += "<h5>Our model predicted " + trial.data.pred_class + ".</h5>";
+              }
+              else if (typeof trial.data.pred_class !== 'undefined' && typeof trial.data.pred_concept !== 'undefined') {
+                  div_title.innerHTML += "<h5>Our model predicted " + trial.data.pred_class + " because:</h5>";
+                  div_title.innerHTML += "<h5>" + trial.data.pred_concept + "</h5>";
+              }
+              //div_title.innerHTML += "<h5>(hover over the image to zoom in)</h5>";
               display_element.insertBefore(div_title, null);
 
               // create div for canvas-image and zoom-pane
@@ -127,7 +135,7 @@ var jsPsychImageButtonResponse = (function (jspsych) {
               div_canvas_zoom.className = "img-zoom-container column";
               div_canvas_zoom.style.margin = "0 50px 0 50px";
               div_canvas_zoom.style.padding = "0";
-              div_canvas_zoom.style.width = "17%";
+              div_canvas_zoom.style.width = "20%";
 
               // create canvas element and image
               var canvas = document.createElement("canvas");
@@ -240,7 +248,7 @@ var jsPsychImageButtonResponse = (function (jspsych) {
               // Zoom in on images
               function imageZoom(imgID, resultID) {
                 var img, lens, result, zoom_scale;
-                const IMG_SCREEN = 0.14516; // hack for getting true width of the displayed image: img_width / window_width is const.
+                const IMG_SCREEN = 0.17093; // hack for getting true width of the displayed image: img_width / window_width is const.
                 var img_width = window.innerWidth * IMG_SCREEN;
                 // Note: since image pane and resulting zooming pane are quadratic
                 //       then img_width = img_height = result_width = result_height
@@ -260,6 +268,11 @@ var jsPsychImageButtonResponse = (function (jspsych) {
                 /*set background properties for the result div:*/
                 result.style.backgroundImage = "url('" + trial.stimulus + "')";
                 result.style.backgroundSize = (img_width * zoom_scale) + "px " + (img_width * zoom_scale) + "px";
+
+                //TODO
+                /*set zoomed patch in the center of the image before moving the lense*/
+                //result.style.backgroundPosition = "-" + ((lens.offsetLeft - img.offsetLeft + lens.offsetWidth/2) * zoom_scale) + "px -" +
+                //    ((lens.offsetTop + lens.offsetWidth/2) * zoom_scale) + "px";
 
                 /*execute a function when someone moves the cursor over the image, or the lens:*/
                 lens.addEventListener("mousemove", moveLens);
@@ -294,7 +307,7 @@ var jsPsychImageButtonResponse = (function (jspsych) {
                     lens.style.left = x + "px";
                     lens.style.top = y + "px";
                     /*display what the lens "sees":*/
-                    result.style.backgroundPosition = "-" + ((x - img.offsetLeft) * zoom_scale - img.offsetLeft) + "px -" + (y * zoom_scale) + "px";
+                    result.style.backgroundPosition = "-" + ((x - img.offsetLeft) * zoom_scale) + "px -" + (y * zoom_scale) + "px";
                 }
 
                 function getCursorPos(e) {
