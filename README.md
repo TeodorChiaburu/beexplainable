@@ -1,14 +1,9 @@
-# Towards ML Methods for Biodiversity: A Novel Wild Bee Dataset and Evaluations of XAI Methods for ML-Assisted Rare Species Annotations
+# Explanations from Humans for Humans: The Potential of Transparent AI for Trust Calibration and Didactics
 
 <img src="https://img.shields.io/badge/TensorFlow-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white" />
+<img src="https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)" />
 
 [![GPLv3 license](https://img.shields.io/badge/License-GPLv3-blue.svg)](http://perso.crans.org/besson/LICENSE.html)
-
-**`Documentation`** | **`Paper`** | **`Dataset`** |
-------------------- |-------------|---------------|
-[![Documentation](https://img.shields.io/badge/api-reference-blue.svg)](https://beexplainable.readthedocs.io/en/latest/) | [![arXiv](https://img.shields.io/badge/arXiv-2206.07497-b31b1b.svg)](https://arxiv.org/abs/2206.07497)|[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6642157.svg)](https://doi.org/10.5281/zenodo.6642157)
-
-### [Poster CVPR22 XAI Workshop](Poster_CVPR22.pdf)
 
 ## Table of Contents
 
@@ -18,18 +13,28 @@
 * [Data Annotation](#data-annotation)
 * [Data Preprocessing](#data-preprocessing)
 * [Training and Validation](#training-and-validation)
-* [XAI Experiments](#xai-experiments)
-* [Conclusion](#conclusion)
-* [Citation](#citation)
+* [Preliminary XAI Experiments without Humans](#preliminary-xai-experiments-without-humans)
+* [XAI Experiments with Humans](#xai-experiments-with-humans)
 
 ## Installation
 
-In order to run some of the experiments in this repository, you will need the following libraries:
+For reading the segmentation masks annotated in Label Studio, you will need:
+* [labelstudio-converter](https://github.com/heartexlabs/label-studio-converter)
 
-* [labelstudio-converter](https://github.com/heartexlabs/label-studio-converter): for reading segmentation masks annotated in Label Studio
-* [quantus](https://github.com/understandable-machine-intelligence-lab/Quantus): for computing the localisation metrics
-* [tf-explain](https://github.com/sicara/tf-explain) and [innvestigate](https://github.com/albermax/innvestigate): for the rest of the XAI notebooks
-* [wingbeats](https://github.com/TeodorChiaburu/wingbeats): for building the CNNs
+For building the Deep Models for image classification and plotting the feature attribution maps:
+* [wingbeats](https://github.com/TeodorChiaburu/wingbeats)
+
+For computing localisation and faithfullness metrics of the saliency maps:
+* [quantus](https://github.com/understandable-machine-intelligence-lab/Quantus)
+
+For computing the saliency maps and TCAV-scores (depending on the experiment/notebook):
+* [tf-explain](https://github.com/sicara/tf-explain), [innvestigate](https://github.com/albermax/innvestigate) and [xplique(https://github.com/deel-ai/xplique)]
+
+For generating concept images (used in the Human-in-the-Loop (HIL) experiments):
+* Stable Diffusion v1.5 from [diffusers](https://github.com/huggingface/diffusers)
+
+Only for running the diffuser you will need PyTorch 1.10. The rest of the code is built on TensorFlow 2.8 and Python 3.10. 
+(see [requirements](requirements.txt)).
 
 ## Introduction
  
@@ -182,7 +187,7 @@ be found in the cooresponding [notebooks](notebooks), plots for [training curves
 [ROC-AUC curves](figures/roc_auc), [worst predictions](figures/worst_preds) and on our freely online available 
 [TensorBoard Experiment](https://tensorboard.dev/experiment/VwaTD5OBSwuxpgK2JH4wCA/#).
 
-## XAI Experiments
+## Preliminary XAI Experiments without Humans
 
 ### Motivation and Related Work
 
@@ -303,36 +308,41 @@ flipping. On the contrary, sometimes it was visibly less efficient.
 
 ![PFMCD2](figures/pf_mcd_testset/Andrena_bicolor_pfmcd_curves.png)
 
-## Conclusion
+## XAI Experiments with Humans
 
-Our results suggest that evaluation of XAI methods remains 
-challenging in niche domains such as rare species classification. 
-The heterogeneity of quality metrics across different XAI methods 
-indicates that choosing the best XAI method for improving 
-annotation experiences for human experts might require further 
-evaluations with human-in-the-loop experiments. We hope that the 
-model, the dataset and the evaluations provided in this work will 
-help researchers to develop models, XAI methods and ML-assisted 
-annotation tools to support entomologists and ultimately improve 
-our understanding of biodiversity.
+We designed a HIL-experiment in [jspsych](https://www.jspsych.org/7.3/) for evaluating 
+to what extent explanations can help humans perform better at classifying insect species. 
+You can run the experiment yourself by checking out our [Demo](https://hgyl4wmb2l.cognition.run).
 
-## Citation
+For computing the explanations we propose a kNN-based approach that predicts relevant concepts in the 
+latent feature space of our classifier - see figure below:
 
-The accompanying paper submitted and presented on the XAI Workshop of 
-CVPR 2022 can be downloaded [here](https://arxiv.org/abs/2206.07497).
+![Pipeline](figures/jspsych/pipeline.png)
 
-If you find our work interesting or useful in your research, please cite us 
-as follows:
+We summarise what we learned from the results of the experiment:
 
-```
-@misc{https://doi.org/10.48550/arxiv.2206.07497,
-      doi = {10.48550/ARXIV.2206.07497}, 
-      url = {https://arxiv.org/abs/2206.07497}, 
-      author = {Chiaburu, Teodor and Biessmann, Felix and Hausser, Frank},
-      keywords = {Artificial Intelligence (cs.AI), FOS: Computer and information sciences, FOS: Computer and information sciences}, 
-      title = {Towards ML Methods for Biodiversity: A Novel Wild Bee Dataset and Evaluations of XAI Methods for ML-Assisted Rare Species Annotations},
-      publisher = {arXiv}, 
-      year = {2022}, 
-      copyright = {Creative Commons Attribution Non Commercial Share Alike 4.0 International}
-}
-```
+### Explanations Can Turn Novices into Expert Annotators
+
+When seeing the model's class prediction accompanied by an explanation for it, users performed better at classifying 
+the insects than without seeing explanations - see figure below:
+
+![Didactics](figures/jspsych/exp_flow_didactics_charts.png)
+
+After completing the tasks, the XAI users were asked four questions with respect to the usefulness of the 
+explanations. The large majority of the respondents viewed the XAI-support as being helpful and easy to understand:
+
+![Survey](figures/jspsych/survey.png)
+
+### Explanations Reduce Blind Trust into AI
+
+It turns out that XAI-users were more inclined to distrust the model when a false class 
+prediction was accompanied by an explanation: 
+
+![Trust](figures/jspsych/confidence_all_fusion_cumulative.png)
+
+### Explanations Enable Users to Learn Correct Rules
+
+When having to solve the classification task again without extra support, users that 
+have seen explanations previously appeared to have learned consistent classification 
+rules and performed better than users in the Control Group (see novices-experts distribution 
+in Task 3 in the plot above).

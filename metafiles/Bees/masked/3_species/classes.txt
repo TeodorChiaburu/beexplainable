@@ -1,0 +1,3 @@
+1 Andrena_flavipes
+2 Andrena_fulva
+3 Bombus_lucorum
