@@ -14,25 +14,18 @@ console.log(assigned_group);
 
 // Create timeline
 var timeline = [];
-const protos = ["img/Andrena_bicolor_proto.jpg", "img/Andrena_flavipes_proto.jpg", "img/Andrena_fulva_proto.jpg",
-				        "img/Bombus_hortorum_proto.jpg", "img/Bombus_lucorum_proto.jpg", "img/Bombus_pratorum_proto.jpg"];
+const protos = ["img/Andrena_flavipes_proto.jpg", "img/Andrena_fulva_proto.jpg", "img/Bombus_lucorum_proto.jpg"];
 
-// The 6 possible classes
+// The 3 possible classes
 // Note: also used as label vector for Task 2
-const classes = ["Andrena bicolor", "Andrena flavipes", "Andrena fulva", "Bombus hortorum", "Bombus lucorum", "Bombus pratorum"];
+const classes = ["Andrena flavipes", "Andrena fulva", "Bombus lucorum"];
 
-const test_samples   = ["img/Andrena_bicolor_39411385_1.jpg",
-                        "img/Andrena_flavipes_56925373_1.jpg",
+const test_samples   = ["img/Andrena_flavipes_56925373_1.jpg",
                         "img/Andrena_fulva_24881697_4.jpg",
-                        "img/Bombus_hortorum_7236392_1.jpg",
                         "img/Bombus_terrestris_48053523_1.jpg",
-                        "img/Bombus_pratorum_20908187_1.jpg",
-                        "img/Andrena_bicolor_39748872_3.jpg",
                         "img/Andrena_flavipes_68809988_2.jpg",
                         "img/Andrena_fulva_12231414_3.jpg",
-                        "img/Bombus_hortorum_84214007_3.jpg",
-                        "img/Bombus_terrestris_48213526_1.jpg",
-                        "img/Bombus_pratorum_21985654_1.jpg"
+                        "img/Bombus_terrestris_48213526_1.jpg"
                        ];
 
 // Shuffle indexes for test samples in Tasks 1 and 3
@@ -57,15 +50,12 @@ for (let i = 6; i < 12; i++) {
   labels_2.push(classes[parseInt(inds[i]) % 6]);
 }
 
-const pred_samples = ["img/Andrena_bicolor_40186737_3.jpg",   // ok-ok
-                      "img/Andrena_flavipes_5795371_2.jpg",   // ok-ok
+const pred_samples = ["img/Andrena_flavipes_5795371_2.jpg",   // ok-ok
                       "img/Andrena_fulva_11872393_2.jpg",     // ok-no
-                      "img/Bombus_hortorum_8829930_3.jpg",    // no-ok
-                      "img/Bombus_terrestris_68122824_2.jpg", // no-ok
-                      "img/Bombus_pratorum_21992207_1.jpg"    // no-no
+                      "img/Bombus_terrestris_68122824_2.jpg"  // no-ok
                      ];
 // Model's class predictions for pred_samples
-const preds = ["Andrena bicolor", "Andrena flavipes", "Andrena fulva", "Bombus pratorum", "Bombus hortorum", "Bombus lucorum"];
+const preds = ["Andrena flavipes", "Andrena fulva", "Bombus hortorum"];
 
 // Model's concept predictions for pred_samples
 const natural_exps = ['it is fuzzy dark orange', 'it has fuzzy yellow and black stripes', 'it has a smooth shiny dark brown texture']
@@ -79,53 +69,25 @@ const exps = [natural_exps[0] + ' and ' + natural_exps[2],
 // Grid with protos (just labels beneath, no buttons)
 var proto_grid = `
       <div id="div_row">
-          <div id="div_venn" class="row">
-              <img src="img/venn_captions.jpg" alt="venn">
-          </div>
-          
           <div class="row">
               <div class="column">
                   <div class="card">
-                      <img src="img/Andrena_bicolor_proto.jpg" alt="bico">
-                      <h5>Andrena bicolor</h5>
-                  </div>
-              </div>
-
-              <div class="column">
-                  <div class="card">
-                      <img src="img/Andrena_flavipes_proto.jpg" alt="flavi">
+                      <img src="img/Andrena_flavipes_proto.jpg" alt="bico">
                       <h5>Andrena flavipes</h5>
                   </div>
               </div>
 
               <div class="column">
                   <div class="card">
-                      <img src="img/Andrena_fulva_proto.jpg" alt="fulva">
+                      <img src="img/Andrena_fulva_proto.jpg" alt="flavi">
                       <h5>Andrena fulva</h5>
                   </div>
               </div>
 
-          </div>
-
-          <div class="row">
               <div class="column">
                   <div class="card">
-                      <img src="img/Bombus_hortorum_proto.jpg" alt="hort">
-                      <h5>Bombus hortorum</h5>
-                  </div>
-              </div>
-
-              <div class="column">
-                  <div class="card">
-                      <img src="img/Bombus_lucorum_proto.jpg" alt="luco">
+                      <img src="img/Bombus_lucorum_proto.jpg" alt="fulva">
                       <h5>Bombus lucorum</h5>
-                  </div>
-              </div>
-
-              <div class="column">
-                  <div class="card">
-                      <img src="img/Bombus_pratorum_proto.jpg" alt="prato">
-                      <h5>Bombus pratorum</h5>
                   </div>
               </div>
           </div>
@@ -160,7 +122,7 @@ if(assigned_group === 'A') {
 var instructions = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `	  
-      <p>In this experiment, you will be shown 18 images of 6 
+      <p>In this experiment, you will be shown 18 images of 3 
 	wild bee species and be asked to solve three tasks.</p><p><strong>Task 1 (6 images)</strong>: Assign a species to the
 	test image based on the prototypes shown on the right half of the page.</p>
       <p><strong>Task 2 (6 images)</strong>: ` + text_task_2 + `</p>
@@ -180,12 +142,9 @@ var just_protos = {
     type: jsPsychHtmlButtonResponse,
     stimulus:
       proto_grid +
-      `<div id="just_protos_prompt_div"><p>Before starting the experiment, take your time and look at the 6 samples on the right.
-	Each of them was chosen as a prototype of their species. The Venn diagram on the top explains how you can distinguish 
-	these 6 species based on three simple visual concepts. Note that <i>B. hortorum</i> has <b>three</b> yellow stripes on its back, 
-	while <i>B. lucorum</i> only has <b>two</b>. Throughout the whole experiment you will be shown these representative samples 
+      `<div id="just_protos_prompt_div"><p>Before starting the experiment, take your time and look at the 3 samples on the right.
+	Each of them was chosen as a prototype of their species. Throughout the whole experiment you will be shown these representative samples 
 	next to the test samples to help you decide which species the test sample belongs to. 
-	The Venn diagram will <b>not</b> be shown again.</p><br>
 	<p>Whenever you are ready, click <strong>Continue</strong> to start the first task:</p>
 	<p><strong>Task 1 (6 images): Assign a species to the
 	test image based on the prototypes.</strong></p></div>`,
