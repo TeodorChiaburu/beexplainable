@@ -199,27 +199,34 @@ var jsPsychImageButtonResponse = (function (jspsych) {
               btngroup_div.id = "div_row";
               html = '';
 
-              for (var i = 0; i < trial.choices.length; i++) {
-                  var str = buttons[i].replace(/%choice%/g, trial.choices[i]); // the button tag along with the class label
-                  var img_path = "img/" + trial.choices[i].replace(" ", "_") + "_proto.jpg";
-
+              // Note: when having 5 prototypes, the grid needs a 6th dummy cell to ensure clean display
+              for (var i = 0; i < trial.choices.length+1; i++) {
                   // only add an extra div of class "row" every three images
                   if(i%3 == 0) {
                       html += '<div class="row">';
                   };
 
-                  html +=
-                      '<div class="column">' +
-                          '<div class="card">' +
-                              '<img src="' + img_path + '">' +
-                              '<div class="container jspsych-image-button-response-button" id="jspsych-image-button-response-button-' + i + '" data-choice="' + i + '">' +
-                                  '<p><button class="button"><strong>' + trial.choices[i] + '</strong></button></p>' +
-                                  //str +
-                              '</div>' +
-                          '</div>' +
-                      '</div>';
+                  if(i == trial.choices.length) {
+                      html +=
+                          '<div class="column"></div>'; // dummy cell with no image
+                  } else {
+                      var str = buttons[i].replace(/%choice%/g, trial.choices[i]); // the button tag along with the class label
+                      var img_path = "img/" + trial.choices[i].replace(" ", "_") + "_proto.jpg";
 
-                  if(i%3 == 2) { // close 'row' div after every 3 images
+                      html +=
+                          '<div class="column">' +
+                          '<div class="card">' +
+                          '<img src="' + img_path + '">' +
+                          '<div class="container jspsych-image-button-response-button" id="jspsych-image-button-response-button-' + i + '" data-choice="' + i + '">' +
+                          '<p><button class="button"><strong>' + trial.choices[i] + '</strong></button></p>' +
+                          //str +
+                          '</div>' +
+                          '</div>' +
+                          '</div>';
+                  }
+
+                  // close 'row' div after every 3 images
+                  if(i%3 == 2) {
                       html += '</div>';
                   };
               }
