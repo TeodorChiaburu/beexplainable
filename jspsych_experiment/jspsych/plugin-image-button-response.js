@@ -125,9 +125,32 @@ var jsPsychImageButtonResponse = (function (jspsych) {
               }
               else if (typeof trial.data.pred_class !== 'undefined' && typeof trial.data.pred_concept !== 'undefined') {
                   div_title.innerHTML += "<h5>Our model predicted " + trial.data.pred_class + " because:</h5>";
-                  div_title.innerHTML += "<h5>" + trial.data.pred_concept + "</h5>";
+
+                  var concept_checks = trial.data.pred_concept.split(" "); // i.e. YES NO YES
+                  div_title.innerHTML += `
+                      <div class="row" id="div_concepts">
+                          <div class="column">
+                              <div class="card">
+                                  <img src="img/brown_concept.jpg">
+                                  <h5 id = "concept_` + concept_checks[0] + `">` + concept_checks[0] + `</h5>
+                              </div>
+                          </div>
+                          
+                          <div class="column">
+                              <div class="card">
+                                  <img src="img/orange_concept.jpg">
+                                  <h5 id = "concept_` + concept_checks[1] + `">` + concept_checks[1] + `</h5>
+                              </div>
+                          </div>
+                          
+                          <div class="column">
+                              <div class="card">
+                                  <img src="img/yellow_concept.png">
+                                  <h5 id = "concept_` + concept_checks[2] + `">` + concept_checks[2] + `</h5>
+                              </div>
+                          </div>
+                      </div>`;
               }
-              //div_title.innerHTML += "<h5>(hover over the image to zoom in)</h5>";
               display_element.insertBefore(div_title, null);
 
               // create div for canvas-image and zoom-pane
@@ -219,7 +242,6 @@ var jsPsychImageButtonResponse = (function (jspsych) {
                           '<img src="' + img_path + '">' +
                           '<div class="container jspsych-image-button-response-button" id="jspsych-image-button-response-button-' + i + '" data-choice="' + i + '">' +
                           '<p><button class="button"><strong>' + trial.choices[i] + '</strong></button></p>' +
-                          //str +
                           '</div>' +
                           '</div>' +
                           '</div>';

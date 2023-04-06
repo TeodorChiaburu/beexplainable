@@ -3,8 +3,8 @@
   float: right;
 }
 
-#div_venn img {
-  width: 50%;
+#div_concepts {
+  width: 35%;
   margin: auto;
 }
 
@@ -68,7 +68,12 @@ html {
 }
 
 #div_title {
-  margin-bottom: 50px;
+  margin-bottom: 10px;
+}
+
+h4 {
+  margin-bottom: 0px;
+  margin-top: 0px;
 }
 
 .container::after, .row::after {
@@ -103,8 +108,6 @@ html {
   border: 1px solid #d4d4d4;
   width: 120px;
   height: 120px;
-  /*top: 20%;
-  left: 40%;*/
 }
 @media screen and (max-width: 1650px) {
   .img-zoom-lens {
@@ -122,4 +125,12 @@ html {
 .img-zoom-result {
   border: 1px solid #d4d4d4;
   aspect-ratio : 1 / 1;
+}
+
+#concept_YES {
+  color: green;
+}
+
+#concept_NO {
+  color: red;
 }

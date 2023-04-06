@@ -1,6 +1,6 @@
 // Initialize jsPsych
 var jsPsych = initJsPsych({
-  show_progress_bar: true
+  show_progress_bar: false
 });
 
 // Randomly pick whether user will be assigned to group A or B
@@ -120,11 +120,6 @@ const test_samples_3 = test_samples.slice(num_samples_per_task); // start at ind
 const labels_3 = labels_13.slice(num_samples_per_task);
 
 /*** Task 2 ***/
-// Textual formulations of the given concepts
-const natural_exps = ['it has a smooth shiny dark brown texture', 'it is fuzzy dark orange', 'it has fuzzy yellow and black stripes']
-const natural_exps_neg = ['it does NOT have a smooth shiny dark brown texture',
-                          'it is NOT fuzzy dark orange', 'it does NOT have fuzzy yellow and black stripes']
-
 // Pool of correctly predicted samples (both cls and concept)
 const pool_samples_correct =   ["img/Andrena_bicolor_2799379_1.jpg",
                                 "img/Andrena_bicolor_70836009_4.jpg",
@@ -152,12 +147,14 @@ const pool_samples_correct =   ["img/Andrena_bicolor_2799379_1.jpg",
 // Correct cls predictions
 const labels_samples_correct = Array(2).fill(classes[0]).concat(Array(5).fill(classes[1]), Array(5).fill(classes[2]),
                                                                 Array(5).fill(classes[3]), Array(5).fill(classes[4]));
-// Correct concept predictions
-const exps_correct_bicol = natural_exps[0] + ' and ' + natural_exps[1] + ' but ' + natural_exps_neg[2];
-const exps_correct_flavi = natural_exps[0] + ' but ' + natural_exps_neg[1] + ' and ' + natural_exps_neg[2];
-const exps_correct_fulva = natural_exps[1] + ' but ' + natural_exps_neg[0] + ' and ' + natural_exps_neg[2];
-const exps_correct_lucor = natural_exps[2] + ' but ' + natural_exps_neg[0] + ' and ' + natural_exps_neg[1];
-const exps_correct_prato = natural_exps[2] + ' and ' + natural_exps[1] + ' but ' + natural_exps_neg[0];
+
+// Correct concept predictions (for series brown - orange - yellow)
+const exps_correct_bicol = 'YES YES NO';
+const exps_correct_flavi = 'YES NO NO';
+const exps_correct_fulva = 'NO YES NO';
+const exps_correct_lucor = 'NO NO YES';
+const exps_correct_prato = 'NO YES YES';
+
 const exps_samples_correct = Array(2).fill(exps_correct_bicol).concat(Array(5).fill(exps_correct_flavi), Array(5).fill(exps_correct_fulva),
                                                                       Array(5).fill(exps_correct_lucor), Array(5).fill(exps_correct_prato));
 
@@ -199,7 +196,6 @@ const samples_wrong = pool_samples_wrong.slice(0, num_wrong_samples);
 const labels_wrong  = labels_samples_wrong.slice(0, num_wrong_samples);
 const preds_wrong   = preds_samples_wrong.slice(0, num_wrong_samples);
 const exps_wrong    = exps_samples_wrong.slice(0, num_wrong_samples);
-
 
 // Concatenate and shuffle samples for Task 2, along with true labels, cls predictions and explanations
 const test_samples_2 = samples_correct.concat(samples_wrong);
@@ -276,7 +272,8 @@ timeline.push(preload);
 var welcome = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `<strong>Welcome to the <i>beexplainable</i> experiment!</strong>
-               <p><i>Note</i>: Please only do this experiment <strong>once</strong>.</p>`,
+               <p><i>Note</i>: Please only do this experiment <strong>once</strong>.</p>
+               <p>We also recommend you use a device with a wider screen (i.e. laptop, tablet) <strong>not</strong> your phone.`,
     choices: ['Continue']
 };
 timeline.push(welcome);
