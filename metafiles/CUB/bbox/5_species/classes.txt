@@ -1,0 +1,5 @@
+1 Laysan_Albatross
+2 Cardinal
+3 Eastern_Towhee
+4 Red_bellied_Woodpecker
+5 Red_cockaded_Woodpecker
