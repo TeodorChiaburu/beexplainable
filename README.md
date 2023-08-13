@@ -1,14 +1,17 @@
-# Towards ML Methods for Biodiversity: A Novel Wild Bee Dataset and Evaluations of XAI Methods for ML-Assisted Rare Species Annotations
+# Explanations from Humans for Humans: Visual Concepts with text2img Methods for Intuitive and Task-Specific Explanations
 
 <img src="https://img.shields.io/badge/TensorFlow-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white" />
+<img src="https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)" />
 
 [![GPLv3 license](https://img.shields.io/badge/License-GPLv3-blue.svg)](http://perso.crans.org/besson/LICENSE.html)
 
+<!--
 **`Documentation`** | **`Paper`** | **`Dataset`** |
 ------------------- |-------------|---------------|
 [![Documentation](https://img.shields.io/badge/api-reference-blue.svg)](https://beexplainable.readthedocs.io/en/latest/) | [![arXiv](https://img.shields.io/badge/arXiv-2206.07497-b31b1b.svg)](https://arxiv.org/abs/2206.07497)|[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6642157.svg)](https://doi.org/10.5281/zenodo.6642157)
 
 ### [Poster CVPR22 XAI Workshop](Poster_CVPR22.pdf)
+-->
 
 ## Table of Contents
 
@@ -23,6 +26,8 @@
 * [Citation](#citation)
 
 ## Installation
+
+TF und Torch version, Stable Diffusion...
 
 In order to run some of the experiments in this repository, you will need the following libraries:
 

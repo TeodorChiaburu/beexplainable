@@ -1,9 +1,12 @@
+/*** UI for HIL-Experiment ***/
+
+
 // Initialize jsPsych
 var jsPsych = initJsPsych({
   show_progress_bar: false
 });
 
-// Randomly pick whether user will be assigned to group A or B
+// Randomly pick whether user will be assigned to group A (Control) or B (XAI)
 groups = ['A', 'B'];
 function choose_group(groups) {
   var index = Math.floor(Math.random() * groups.length);
@@ -19,7 +22,7 @@ const protos = ["img/Andrena_bicolor_proto.jpg", "img/Andrena_flavipes_proto.jpg
 // The 3 possible classes
 const classes = ["Andrena bicolor", "Andrena flavipes", "Andrena fulva", "Bombus lucorum", "Bombus pratorum"];
 
-/*** Task 1 and 3 ***/
+/*** Tasks 1 and 3 ***/
 // Sample pools for Tasks 1 and 3 (only 4 will be randomly picked for each species)
 const pool_samples_bicol = ["img/Andrena_bicolor_39411385_1.jpg",
                             "img/Andrena_bicolor_39748872_3.jpg",
@@ -146,7 +149,7 @@ const pool_samples_correct =   ["img/Andrena_bicolor_2799379_1.jpg",
 
 // Correct cls predictions
 const labels_samples_correct = Array(2).fill(classes[0]).concat(Array(5).fill(classes[1]), Array(5).fill(classes[2]),
-                                                                Array(5).fill(classes[3]), Array(5).fill(classes[4]));
+                                                                          Array(5).fill(classes[3]), Array(5).fill(classes[4]));
 
 // Correct concept predictions (for series brown - orange - yellow)
 const exps_correct_bicol = 'YES YES NO';
@@ -156,7 +159,7 @@ const exps_correct_lucor = 'NO NO YES';
 const exps_correct_prato = 'NO YES YES';
 
 const exps_samples_correct = Array(2).fill(exps_correct_bicol).concat(Array(5).fill(exps_correct_flavi), Array(5).fill(exps_correct_fulva),
-                                                                      Array(5).fill(exps_correct_lucor), Array(5).fill(exps_correct_prato));
+                                                                                Array(5).fill(exps_correct_lucor), Array(5).fill(exps_correct_prato));
 
 // Shuffle samples, true labels and true explanations
 for (let i = pool_samples_correct.length - 1; i > 0; i--) {
@@ -268,7 +271,7 @@ var preload = {
 };
 timeline.push(preload);
 
-// Define welcome message trial
+// Define welcome message
 var welcome = {
     type: jsPsychHtmlButtonResponse,
     stimulus: `<strong>Welcome to the <i>beexplainable</i> experiment!</strong>
