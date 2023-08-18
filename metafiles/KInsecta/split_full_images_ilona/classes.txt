@@ -1,0 +1,16 @@
+1 Apis_mellifica
+2 Bombus_lapidarius
+3 Bombus_terrestris
+4 Cetonia_aurata
+5 Episyrphus_balteatus
+6 Eristalis_tenax
+7 Graphosoma_lineatum
+8 Leptinotarsa_decemlineata
+9 Panorpa_communis
+10 Polistes_dominula
+11 Sarcophaga_carnaria
+12 Scaeva_pyrastri
+13 Syrphus_ribesii
+14 Vespa_crabro
+15 Vespula_germanica
+16 Xylocopa_violacea

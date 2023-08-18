@@ -1,17 +1,15 @@
 """Library for deriving extra annotations from those imported from Label Studio"""
 
 import sys
-# Insert libraries paths from 1 on; 0 is the script path
-sys.path.insert(1, '../../label_studio_converter') # for scripts
-sys.path.insert(2, './beexplainable/label_studio_converter') # for notebooks
-sys.path.insert(3, '..\\..\\label_studio_converter')
-sys.path.insert(4, '.\\beexplainable\\label_studio_converter')
+sys.path.insert(1, '/mnt/KInsektDaten/teo/label_studio_converter')
 
 import numpy as np
-from typing import Tuple, List
+import itertools
+from typing import Tuple, List, Dict
 from skimage.measure import regionprops
 from scipy.ndimage.morphology import binary_closing
 from label_studio_converter.brush import decode_rle # comment out before sphinx make html
+
 
 def rle_to_matrix(rle_arr: np.ndarray, dims: Tuple[int, int]) -> np.ndarray:
     """Converts an array of RLE strings into a 2d matrix of 1s and 0s defining \
@@ -32,7 +30,7 @@ def rle_to_matrix(rle_arr: np.ndarray, dims: Tuple[int, int]) -> np.ndarray:
     mask = np.reshape(mask, (dims[0], dims[1], 4))[:, :, 0]
 
     # Right now, mask is not binary, since decode_rle smoothens the boundaries out.
-    # This results not only pixel values of 0 and 255, but also values in-between.
+    # This results not only in pixel values of 0 and 255, but also values in-between.
     # We map all values above threshold to 1 (part of mask) and those below to 0.
     threshold = 50
     for i in range(mask.shape[0]):
@@ -105,5 +103,26 @@ def binary_mask_to_indexes(bin_mask: np.ndarray, output_as_strings: bool = True)
 
     return mask_ind_1d
 
-def indexes_to_binary_mask(indexes: List) -> np.ndarray:
-    pass
+def binary_mask_to_rle(bin_mask: np.ndarray) -> Dict[List, List]:
+    """Computes the COCO-RLE encoding of a binary mask.
+
+    :param bin_mask: 2D-array of 1's (mask) and 0's (background).
+    :type bin_mask: np.ndarray
+    :return: Dictionary containing the RLEs as 'counts' and the size of the image.
+    :rtype: Dict[List, List]
+    """
+
+    rle = {'counts': [], 'size': list(bin_mask.shape)}
+    counts = rle.get('counts')
+
+    # Iterate through the mask flattened row by row
+    # itertools splits the flattened image into sublists of 0's and 1's
+    # order='F' is important for detectron2, otherwise the mask is flipped
+    for i, (value, elements) in enumerate(itertools.groupby(bin_mask.ravel(order='F'))):
+        # Odd counts are for background, even counts for object
+        # If the first pixels are part of the object, enter a 0 for background first
+        if i == 0 and value == 1:
+            counts.append(0)
+        counts.append(len(list(elements)))
+
+    return rle
