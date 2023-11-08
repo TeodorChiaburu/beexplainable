@@ -1,0 +1,10 @@
+1 Andrena_bicolor/Andrena_bicolor_2799379_1.jpg
+50 Andrena_bicolor/Andrena_bicolor_70836009_4.jpg
+200 Andrena_flavipes/Andrena_flavipes_70667186_1.jpg
+230 Andrena_flavipes/Andrena_flavipes_73411496_1.jpg
+260 Andrena_flavipes/Andrena_flavipes_74766389_2.jpg
+270 Andrena_flavipes/Andrena_flavipes_77801499_2.jpg
+554 Andrena_fulva/Andrena_fulva_77876860_3.jpg
+594 Andrena_fulva/Andrena_fulva_78437226_1.jpg
+31 Andrena_bicolor/Andrena_bicolor_44969462_15.jpg
+517 Andrena_fulva/Andrena_fulva_76966123_1.jpg
