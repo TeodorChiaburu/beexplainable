@@ -83,3 +83,7 @@
 84 Bombus_lucorum/Bombus_terrestris_72867045_1.jpg
 85 Bombus_lucorum/Bombus_terrestris_73531362_1.jpg
 86 Bombus_lucorum/Bombus_terrestris_74551267_1.jpg
+87 Andrena_bicolor/Andrena_bicolor_42078638_2.jpg
+88 Andrena_fulva/Andrena_fulva_83947290_1.jpg
+89 Bombus_pratorum/Bombus_pratorum_22151346_1.jpg
+90 Bombus_lucorum/Bombus_terrestris_53348597_1.jpg
