@@ -8,7 +8,7 @@ import glob
 from beexplainable.utils import metafile_readers as mr
 
 # Metafile folder
-fungi_folder  = "../metafiles/Fungi/"
+fungi_folder = "../metafiles/Fungi/masked/"
 
 # Read class names
 CLASSES_PATH = fungi_folder + "classes.txt"
@@ -18,7 +18,7 @@ images = open(fungi_folder + "images.txt", "a")
 image_class_labels = open(fungi_folder + "image_class_labels.txt", "a")
 
 # Get all paths to the images
-FUNGI_PATH = '../../../data/DanishFungi/DF20M_3spec/'
+FUNGI_PATH = '../../../data/DanishFungi/DF20M_3spec_masked/'
 img_paths = glob.glob(FUNGI_PATH + '*/*.JPG')
 
 for i in range(len(img_paths)):
