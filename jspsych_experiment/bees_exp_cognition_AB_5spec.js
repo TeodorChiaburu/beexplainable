@@ -152,11 +152,11 @@ const labels_samples_correct = Array(2).fill(classes[0]).concat(Array(5).fill(cl
                                                                           Array(5).fill(classes[3]), Array(5).fill(classes[4]));
 
 // Correct concept predictions (for series brown - orange - yellow)
-const exps_correct_bicol = 'YES YES NO';
-const exps_correct_flavi = 'YES NO NO';
-const exps_correct_fulva = 'NO YES NO';
-const exps_correct_lucor = 'NO NO YES';
-const exps_correct_prato = 'NO YES YES';
+const exps_correct_bicol = 'shiny_brown fuzzy_orange not_fuzzy_yellow'; //'YES YES NO';
+const exps_correct_flavi = 'shiny_brown not_fuzzy_orange not_fuzzy_yellow'; //'YES NO NO';
+const exps_correct_fulva = 'not_shiny_brown fuzzy_orange not_fuzzy_yellow'; //'NO YES NO';
+const exps_correct_lucor = 'not_shiny_brown not_fuzzy_orange fuzzy_yellow'; //'NO NO YES';
+const exps_correct_prato = 'not_shiny_brown fuzzy_orange fuzzy_yellow'; //'NO YES YES';
 
 const exps_samples_correct = Array(2).fill(exps_correct_bicol).concat(Array(5).fill(exps_correct_flavi), Array(5).fill(exps_correct_fulva),
                                                                                 Array(5).fill(exps_correct_lucor), Array(5).fill(exps_correct_prato));
