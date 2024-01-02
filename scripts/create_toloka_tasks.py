@@ -2,10 +2,10 @@
 import numpy as np
 
 # Experiment group name depends on what images are shown in Task 2 (control, concepts, examples)
-group = 'examples'
+group = 'control'
 
 # For how many tolokers should the tsv be conceived? Every user gets a total of 30 images.
-num_users = 5
+num_users = 100
 
 # Read URLs
 f = open('../toloka/bees/links_tasks13.txt', 'r')
@@ -20,7 +20,7 @@ hard_t13, easy_t13 = [link.strip() for link in links_t13 if 'hard' in link], [li
 hard_t2,  easy_t2  = [link.strip() for link in links_t2  if 'hard' in link], [link.strip() for link in links_t2  if 'easy' in link]
 
 # Open tsv file
-tsv_file = open('../toloka/bees/bees_tasks123_' + group + '.tsv', 'a')
+tsv_file = open('../toloka/bees/bees_tasks123_' + group + '_100.tsv', 'a')
 
 for i in range(num_users):
     # Shuffle links
