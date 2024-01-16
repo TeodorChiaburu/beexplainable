@@ -1,11 +1,11 @@
 """Script to identify unattentive/uninterested Tolokers that have submitted too many wrong answers"""
 import pandas as pd
 
-exp_group = 'Concepts' # Control, Concepts or Examples
-PATH_EXP = 'bees/experiment_100_2/Toloka_Bees_' + exp_group + '_100_2_all.tsv'
+exp_group = 'Examples' # Control, Concepts or Examples
+PATH_EXP = 'fungi/experiment_100_2/Toloka_Fungi_' + exp_group + '_100_2_all.tsv'
 stats = pd.read_csv(PATH_EXP, sep = '\t')
 
-review = open('bees/experiment_100_2/Toloka_Bees_' + exp_group + '_100_2_reviews.tsv', 'w')
+review = open('fungi/experiment_100_2/Toloka_Fungi_' + exp_group + '_100_2_reviews.tsv', 'w')
 review.write('ASSIGNMENT:assignment_id\tACCEPT:verdict\tACCEPT:comment\n')
 
 # Note: since the overlapping in Toloka is 1, every worker_id will be matched with a unique assignment_id
@@ -20,7 +20,7 @@ for assign_id, group in stats.groupby(by='ASSIGNMENT:assignment_id'):
 
     # A user will be rejected, if they didn't get at least 4 correct answers per task
     # Rejected users get a '-' as verdict and a comment. Accepted users get a '+'
-    if num_corr_t1 < 4 or num_corr_t2 < 4 or num_corr_t3 < 4:
+    if num_corr_t1 < 3 or num_corr_t2 < 3 or num_corr_t3 < 3:
         review.write(assign_id + '\t' + '-' + '\t' +
                      'Sorry, you had too many wrong answers. We expect at least 4 correct answers out of 10 in each task.\n')
         num_rejected += 1
