@@ -1,15 +1,16 @@
 """Script to identify unattentive/uninterested Tolokers that have submitted too many wrong answers"""
 import pandas as pd
 
-exp_group = 'Examples' # Control, Concepts or Examples
-PATH_EXP = 'fungi/experiment_100_2/Toloka_Fungi_' + exp_group + '_100_2_all.tsv'
+exp_group = 'Concepts' # Control, Control_Conf, Concepts or Examples
+PATH_EXP = 'bees/experiment_200_1/Toloka_Bees_' + exp_group + '_200_all.tsv'
 stats = pd.read_csv(PATH_EXP, sep = '\t')
 
-review = open('fungi/experiment_100_2/Toloka_Fungi_' + exp_group + '_100_2_reviews.tsv', 'w')
+review = open('bees/experiment_200_1/Toloka_Bees_' + exp_group + '_200_reviews.tsv', 'w')
 review.write('ASSIGNMENT:assignment_id\tACCEPT:verdict\tACCEPT:comment\n')
 
 # Note: since the overlapping in Toloka is 1, every worker_id will be matched with a unique assignment_id
 num_rejected = 0
+min_answers  = 3 # min. number of correct answers in every task to pass
 for assign_id, group in stats.groupby(by='ASSIGNMENT:assignment_id'):
 
     # Look at every user and divide their answers into Tasks 1-2-3
@@ -20,9 +21,9 @@ for assign_id, group in stats.groupby(by='ASSIGNMENT:assignment_id'):
 
     # A user will be rejected, if they didn't get at least 4 correct answers per task
     # Rejected users get a '-' as verdict and a comment. Accepted users get a '+'
-    if num_corr_t1 < 3 or num_corr_t2 < 3 or num_corr_t3 < 3:
+    if num_corr_t1 < min_answers or num_corr_t2 < min_answers or num_corr_t3 < min_answers:
         review.write(assign_id + '\t' + '-' + '\t' +
-                     'Sorry, you had too many wrong answers. We expect at least 4 correct answers out of 10 in each task.\n')
+                     'Sorry, you had too many wrong answers. We expect at least ' +  str(min_answers) +  ' correct answers out of 10 in each task.\n')
         num_rejected += 1
     else:
         review.write(assign_id + '\t' + '+' + '\t' + '\n')

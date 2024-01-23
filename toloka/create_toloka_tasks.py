@@ -3,25 +3,30 @@ import numpy as np
 import glob
 
 # Experiment group name depends on what images are shown in Task 2
-groups = ['control', 'concepts', 'examples']
+groups = ['control', 'control_conf', 'concepts', 'examples']
 
 # For how many tolokers should the tsv be conceived? Every user gets a total of 30 images.
-num_users = 100
+num_users = 200
+
+DATASET = 'bees' # bees or fungi
 
 # Get list of all img names in the sampling pool for Toloka
-task123_paths = glob.glob('./fungi/images/task13_imgs/*.JPG')
-task123_ids = np.asarray([img.split('/')[-1].split('_')[0] for img in task123_paths]) # get image ids only i.e. 2237915051-225385
+task123_paths = glob.glob(DATASET + '/images/task13_imgs/*.jpg')
+if DATASET == 'bees':
+    task123_ids = np.asarray([img.split('/')[-1].split('_')[2] for img in task123_paths])  # get image ids only i.e. 2799379
+elif DATASET == 'fungi':
+    task123_ids = np.asarray([img.split('/')[-1].split('_')[0] for img in task123_paths]) # get image ids only i.e. 2237915051
 
 # Read URLs
-f = open('fungi/images/links_tasks13.txt', 'r')
+f = open(DATASET + '/images/links_tasks13.txt', 'r')
 links_t13 = np.asarray(f.readlines())
 f.close()
 links_t2, tsv_files = {}, {}
 for group in groups:
-    f = open('fungi/images/links_task2_' + group + '.txt', 'r')
+    f = open(DATASET + '/images/links_task2_' + group + '.txt', 'r')
     links_t2[group] = np.asarray(f.readlines())
     f.close()
-    tsv_files[group] = open('fungi/experiment_100_2/fungi_tasks123_' + group + '_100.tsv', 'w')
+    tsv_files[group] = open(DATASET + '/experiment_200_1/' + DATASET + '_tasks123_' + group + '_200.tsv', 'w')
     tsv_files[group].write("INPUT:image\tGOLDEN:result\n")
 
 # Get indexes of hard and easy samples
@@ -52,13 +57,19 @@ for i in range(num_users):
                 # Get ibb link for images with AI hint
                 for link in links_t2[group]:
                     if id in link:
-                        tsv_files[group].write(link.strip() + '\t' + link.split('-')[2] + '\n')
+                        if DATASET == 'bees':
+                            tsv_files[group].write(link.strip() + '\t' + link.split('-')[1] + '\n')
+                        elif DATASET == 'fungi':
+                            tsv_files[group].write(link.strip() + '\t' + link.split('-')[2] + '\n')
                         break
             else: # images in task 1 and 3
                 # Get ibb link for images without AI hint
                 for link in links_t13:
                     if id in link:
-                        tsv_files[group].write(link.strip() + '\t' + link.split('-')[2] + '\n')
+                        if DATASET == 'bees':
+                            tsv_files[group].write(link.strip() + '\t' + link.split('-')[1] + '\n')
+                        elif DATASET == 'fungi':
+                            tsv_files[group].write(link.strip() + '\t' + link.split('-')[2] + '\n')
                         break
 
 for group in groups:
