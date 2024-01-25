@@ -1,7 +1,7 @@
 """Script to identify unattentive/uninterested Tolokers that have submitted too many wrong answers"""
 import pandas as pd
 
-exp_group = 'Examples' # Control, Control_Conf, Concepts or Examples
+exp_group = 'Concepts' # Control, Control_Conf, Concepts or Examples
 PATH_EXP = 'bees/experiment_200_1/Toloka_Bees_' + exp_group + '_200_all.tsv'
 stats = pd.read_csv(PATH_EXP, sep = '\t')
 
@@ -10,7 +10,7 @@ review.write('ASSIGNMENT:assignment_id\tACCEPT:verdict\tACCEPT:comment\n')
 
 # Note: since the overlapping in Toloka is 1, every worker_id will be matched with a unique assignment_id
 num_rejected = 0
-min_answers  = 4 # min. number of correct answers in every task to pass (4 for Bees, 3 for Fungi)
+min_answers  = 3 # min. number of correct answers in every task to pass
 for assign_id, group in stats.groupby(by='ASSIGNMENT:assignment_id'):
 
     # Look at every user and divide their answers into Tasks 1-2-3
