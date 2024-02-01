@@ -8,7 +8,7 @@ groups = ['control', 'control_conf', 'concepts_knn', 'concepts_tcav', 'examples_
 # For how many tolokers should the tsv be conceived? Every user gets a total of 30 images.
 num_users = 200
 
-DATASET = 'fungi' # bees or fungi
+DATASET = 'bees' # bees or fungi
 
 # Get list of all img names in the sampling pool for Toloka
 task123_paths = glob.glob(DATASET + '/images/task13_imgs/*.jpg')
@@ -26,7 +26,7 @@ for group in groups:
     f = open(DATASET + '/images/links_task2_' + group + '.txt', 'r')
     links_t2[group] = np.asarray(f.readlines())
     f.close()
-    tsv_files[group] = open(DATASET + '/experiment_200_1/' + DATASET + '_tasks123_' + group + '_200.tsv', 'w')
+    tsv_files[group] = open(DATASET + '/experiment_200_2/' + DATASET + '_tasks123_' + group + '_200.tsv', 'w')
     tsv_files[group].write("INPUT:image\tGOLDEN:result\n")
 
 # Get indexes of hard and easy samples
