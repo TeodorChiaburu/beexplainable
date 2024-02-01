@@ -3,12 +3,12 @@ import numpy as np
 import glob
 
 # Experiment group name depends on what images are shown in Task 2
-groups = ['control', 'control_conf', 'concepts', 'examples']
+groups = ['control', 'control_conf', 'concepts_knn', 'concepts_tcav', 'examples_gradsim', 'examples_reppoint']
 
 # For how many tolokers should the tsv be conceived? Every user gets a total of 30 images.
 num_users = 200
 
-DATASET = 'bees' # bees or fungi
+DATASET = 'fungi' # bees or fungi
 
 # Get list of all img names in the sampling pool for Toloka
 task123_paths = glob.glob(DATASET + '/images/task13_imgs/*.jpg')
