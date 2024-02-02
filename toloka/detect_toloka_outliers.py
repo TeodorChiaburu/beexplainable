@@ -1,11 +1,11 @@
 """Script to identify unattentive/uninterested Tolokers that have submitted too many wrong answers"""
 import pandas as pd
 
-exp_group = 'Concepts' # Control, Control_Conf, Concepts or Examples
-PATH_EXP = 'bees/experiment_200_1/Toloka_Bees_' + exp_group + '_200_all.tsv'
+exp_group = 'Examples_RepPoint' # Control, Control_Conf, Concepts_KNN, Concepts_TCAV, Examples_GradSim or Examples_RepPoint
+PATH_EXP = 'fungi/experiment_200_1/Toloka_Fungi_' + exp_group + '_200_1_all.tsv'
 stats = pd.read_csv(PATH_EXP, sep = '\t')
 
-review = open('bees/experiment_200_1/Toloka_Bees_' + exp_group + '_200_reviews.tsv', 'w')
+review = open('fungi/experiment_200_1/Toloka_Fungi_' + exp_group + '_200_1_reviews.tsv', 'w')
 review.write('ASSIGNMENT:assignment_id\tACCEPT:verdict\tACCEPT:comment\n')
 
 # Note: since the overlapping in Toloka is 1, every worker_id will be matched with a unique assignment_id
