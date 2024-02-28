@@ -14,7 +14,7 @@
 * [Data Preprocessing](#data-preprocessing)
 * [Training and Validation](#training-and-validation)
 * [Preliminary XAI Experiments without Humans](#preliminary-xai-experiments-without-humans)
-* [XAI Experiments with Humans](#xai-experiments-with-humans)
+* [Concept-based Prototypical Nearest Neighbors (CoProNN)](#copronn)
 
 ## Installation
 
@@ -308,41 +308,23 @@ flipping. On the contrary, sometimes it was visibly less efficient.
 
 ![PFMCD2](figures/pf_mcd_testset/Andrena_bicolor_pfmcd_curves.png)
 
-## XAI Experiments with Humans
+## Concept-based Prototypical Nearest Neighbors (CoProNN)
 
-We designed a HIL-experiment in [jspsych](https://www.jspsych.org/7.3/) for evaluating 
-to what extent explanations can help humans perform better at classifying insect species. 
-You can run the experiment yourself by checking out our [Demo](https://hgyl4wmb2l.cognition.run).
+Link to paper: follows...
 
-For computing the explanations we propose a kNN-based approach that predicts relevant concepts in the 
-latent feature space of our classifier - see figure below:
+We have developed a novel concept-based post-hoc XAI method. It leverages recent 
+progress in generative text2img models i.e. Stable Diffusion to generate high-level 
+concept images to explain the prediction of a model via kNN. The pipeline is shown below:
 
-![Pipeline](figures/jspsych/pipeline.png)
+![CoProNN](figures/knn_vs_tcav_vs_ibd/copronn_pipeline.png)
 
-We summarise what we learned from the results of the experiment:
+To validate the utility of our method, we conducted a user study where participants were asked to classify 
+wild bee species either while receiving our model's prediction as a hint (Control Group) 
+or both the model's prediction and a CoProNN-explanation for it (XAI Group). It turns out 
+that explanations helped users classify the bees more accurately and spot wrong model 
+predictions more easily.
 
-### Explanations Can Turn Novices into Expert Annotators
+![Task2_Acc](figures/jspsych/task_2_corrects.png)
 
-When seeing the model's class prediction accompanied by an explanation for it, users performed better at classifying 
-the insects than without seeing explanations - see figure below:
-
-![Didactics](figures/jspsych/exp_flow_didactics_charts.png)
-
-After completing the tasks, the XAI users were asked four questions with respect to the usefulness of the 
-explanations. The large majority of the respondents viewed the XAI-support as being helpful and easy to understand:
-
-![Survey](figures/jspsych/survey.png)
-
-### Explanations Reduce Blind Trust into AI
-
-It turns out that XAI-users were more inclined to distrust the model when a false class 
-prediction was accompanied by an explanation: 
-
-![Trust](figures/jspsych/confidence_all_fusion_cumulative.png)
-
-### Explanations Enable Users to Learn Correct Rules
-
-When having to solve the classification task again without extra support, users that 
-have seen explanations previously appeared to have learned consistent classification 
-rules and performed better than users in the Control Group (see novices-experts distribution 
-in Task 3 in the plot above).
+A [demo](https://hgyl4wmb2l.cognition.run) of our human-in-the-loop experiment 
+is freely available online.
