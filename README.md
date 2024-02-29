@@ -14,7 +14,6 @@
 * [Data Preprocessing](#data-preprocessing)
 * [Training and Validation](#training-and-validation)
 * [Preliminary XAI Experiments without Humans](#preliminary-xai-experiments-without-humans)
-* [XAI Experiments with Humans](#xai-experiments-with-humans)
 
 ## Installation
 
@@ -308,41 +307,8 @@ flipping. On the contrary, sometimes it was visibly less efficient.
 
 ![PFMCD2](figures/pf_mcd_testset/Andrena_bicolor_pfmcd_curves.png)
 
-## XAI Experiments with Humans
+## CoProNN and Human-in-the-Loop Experiments
 
-We designed a HIL-experiment in [jspsych](https://www.jspsych.org/7.3/) for evaluating 
-to what extent explanations can help humans perform better at classifying insect species. 
-You can run the experiment yourself by checking out our [Demo](https://hgyl4wmb2l.cognition.run).
+This section will be built soon.
 
-For computing the explanations we propose a kNN-based approach that predicts relevant concepts in the 
-latent feature space of our classifier - see figure below:
 
-![Pipeline](figures/jspsych/pipeline.png)
-
-We summarise what we learned from the results of the experiment:
-
-### Explanations Can Turn Novices into Expert Annotators
-
-When seeing the model's class prediction accompanied by an explanation for it, users performed better at classifying 
-the insects than without seeing explanations - see figure below:
-
-![Didactics](figures/jspsych/exp_flow_didactics_charts.png)
-
-After completing the tasks, the XAI users were asked four questions with respect to the usefulness of the 
-explanations. The large majority of the respondents viewed the XAI-support as being helpful and easy to understand:
-
-![Survey](figures/jspsych/survey.png)
-
-### Explanations Reduce Blind Trust into AI
-
-It turns out that XAI-users were more inclined to distrust the model when a false class 
-prediction was accompanied by an explanation: 
-
-![Trust](figures/jspsych/confidence_all_fusion_cumulative.png)
-
-### Explanations Enable Users to Learn Correct Rules
-
-When having to solve the classification task again without extra support, users that 
-have seen explanations previously appeared to have learned consistent classification 
-rules and performed better than users in the Control Group (see novices-experts distribution 
-in Task 3 in the plot above).
