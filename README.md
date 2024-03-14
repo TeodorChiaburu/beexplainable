@@ -14,6 +14,7 @@
 * [Data Preprocessing](#data-preprocessing)
 * [Training and Validation](#training-and-validation)
 * [Preliminary XAI Experiments without Humans](#preliminary-xai-experiments-without-humans)
+* [Concept-based Prototypical Nearest Neighbors (CoProNN)](#copronn)
 
 ## Installation
 
@@ -307,8 +308,23 @@ flipping. On the contrary, sometimes it was visibly less efficient.
 
 ![PFMCD2](figures/pf_mcd_testset/Andrena_bicolor_pfmcd_curves.png)
 
-## CoProNN and Human-in-the-Loop Experiments
+## Concept-based Prototypical Nearest Neighbors (CoProNN)
 
-This section will be built soon.
+Link to paper: follows...
 
+We have developed a novel concept-based post-hoc XAI method. It leverages recent 
+progress in generative text2img models i.e. Stable Diffusion to generate high-level 
+concept images to explain the prediction of a model via kNN. The pipeline is shown below:
 
+![CoProNN](figures/knn_vs_tcav_vs_ibd/copronn_pipeline.png)
+
+To validate the utility of our method, we conducted a user study where participants were asked to classify 
+wild bee species either while receiving our model's prediction as a hint (Control Group) 
+or both the model's prediction and a CoProNN-explanation for it (XAI Group). It turns out 
+that explanations helped users classify the bees more accurately and spot wrong model 
+predictions more easily.
+
+![Task2_Acc](figures/jspsych/task_2_corrects.png)
+
+A [demo](https://hgyl4wmb2l.cognition.run) of our human-in-the-loop experiment 
+is freely available online.
