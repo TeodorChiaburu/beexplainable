@@ -28,7 +28,7 @@ For computing localisation and faithfullness metrics of the saliency maps:
 * [quantus](https://github.com/understandable-machine-intelligence-lab/Quantus)
 
 For computing the saliency maps and TCAV-scores (depending on the experiment/notebook):
-* [tf-explain](https://github.com/sicara/tf-explain), [innvestigate](https://github.com/albermax/innvestigate) and [xplique(https://github.com/deel-ai/xplique)]
+* [tf-explain](https://github.com/sicara/tf-explain), [innvestigate](https://github.com/albermax/innvestigate) and [xplique](https://github.com/deel-ai/xplique)
 
 For generating concept images (used in the Human-in-the-Loop (HIL) experiments):
 * Stable Diffusion v1.5 from [diffusers](https://github.com/huggingface/diffusers)
