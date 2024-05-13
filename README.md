@@ -28,7 +28,7 @@ For computing localisation and faithfullness metrics of the saliency maps:
 * [quantus](https://github.com/understandable-machine-intelligence-lab/Quantus)
 
 For computing the saliency maps and TCAV-scores (depending on the experiment/notebook):
-* [tf-explain](https://github.com/sicara/tf-explain), [innvestigate](https://github.com/albermax/innvestigate) and [xplique(https://github.com/deel-ai/xplique)]
+* [tf-explain](https://github.com/sicara/tf-explain), [innvestigate](https://github.com/albermax/innvestigate) and [xplique](https://github.com/deel-ai/xplique)
 
 For generating concept images (used in the Human-in-the-Loop (HIL) experiments):
 * Stable Diffusion v1.5 from [diffusers](https://github.com/huggingface/diffusers)
@@ -310,7 +310,7 @@ flipping. On the contrary, sometimes it was visibly less efficient.
 
 ## Concept-based Prototypical Nearest Neighbors (CoProNN)
 
-Link to paper: follows...
+Paper accepted at WCXAI24 in Valletta. Download [here](https://arxiv.org/abs/2404.14830).
 
 We have developed a novel concept-based post-hoc XAI method. It leverages recent 
 progress in generative text2img models i.e. Stable Diffusion to generate high-level 
