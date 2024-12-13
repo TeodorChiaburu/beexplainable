@@ -327,4 +327,6 @@ predictions more easily.
 ![Task2_Acc](figures/jspsych/task_2_corrects.png)
 
 A [demo](https://hgyl4wmb2l.cognition.run) of our human-in-the-loop experiment 
-is freely available online.
+is freely available online. Also refer to our [paper](https://arxiv.org/abs/2409.17157) 
+(presented at the XAI Workshop at ECML 24, Vilnius) where we describe the experimental setup 
+and the results in greater detail.
